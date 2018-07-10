@@ -1,0 +1,3 @@
+Overture creates define statements as let statements.
+Branch issue683-addExplicitDefineStatements adds an ADefStm to the AST that enables us to disambiguate. When run with that code this test passes.
+see https://github.com/overturetool/overture/issues/683

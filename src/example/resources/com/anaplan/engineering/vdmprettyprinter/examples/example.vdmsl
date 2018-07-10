@@ -1,0 +1,6 @@
+values
+    a = 1
+
+functions
+inc: nat -> nat
+inc(i) == i + 1
