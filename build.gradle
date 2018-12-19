@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.anaplan.engineering'
-version = '2.6.3-SNAPSHOT'
+version = '2.6.4'
 
 apply plugin: 'kotlin'
 
@@ -29,17 +29,18 @@ ext {
 }
 
 repositories {
-    mavenLocal()
-    mavenCentral()
+    jcenter()
 }
 
 dependencies {
-    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlinVersion
-    compile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlinVersion
+    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlinVersion
+    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlinVersion
 
-    compile group: 'org.overturetool.core', name: 'interpreter', version: overtureVersion
+    implementation group: 'org.overturetool.core', name: 'interpreter', version: overtureVersion
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    testCompile group: 'com.nhaarman', name: 'mockito-kotlin', version: '1.5.0'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'com.nhaarman', name: 'mockito-kotlin', version: '1.5.0'
 }
+
+
 

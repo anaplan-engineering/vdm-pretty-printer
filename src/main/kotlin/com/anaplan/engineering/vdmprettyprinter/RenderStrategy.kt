@@ -26,7 +26,7 @@ import com.anaplan.engineering.vdmprettyprinter.RenderToken.*
 interface IRenderStrategy {
     fun renderToken(token: RenderToken): String
     fun renderIndent(indentCount: Int): String
-    fun renderNavigationMarker(marker: NavigationMarker) : String
+    fun renderNavigationMarker(marker: NavigationMarker): String
     fun replacesParentheses(token: RenderToken): Boolean
     val vspace: String
     val header: String
@@ -116,9 +116,10 @@ open class MathematicalUnicodeTextRenderStrategy : PlainAsciiTextRenderStrategy(
 
 }
 
-class MathematicalUnicodeHtmlRenderStrategy : IRenderStrategy {
-    override val header = "<html><body>"
-    override val footer = "</body></html>"
+class MathematicalUnicodeHtmlRenderStrategy(
+        override val header: String = "<html><body>",
+        override val footer: String = "</body></html>"
+) : IRenderStrategy {
 
     // blank lines handled by other styling e.g. headings
     override val vspace = ""
@@ -130,7 +131,7 @@ class MathematicalUnicodeHtmlRenderStrategy : IRenderStrategy {
 
     override fun replacesParentheses(token: RenderToken) = unicodeSymbolsThatReplaceParentheses.contains(token)
 
-    override fun renderNavigationMarker(marker: NavigationMarker)  = "<div id='${marker.id}'/>"
+    override fun renderNavigationMarker(marker: NavigationMarker) = "<div id='${marker.id}'/>"
 
     override fun renderIndent(indentCount: Int) = (0 until indentCount).map { "&nbsp;&nbsp;" }.joinToString("")
 
