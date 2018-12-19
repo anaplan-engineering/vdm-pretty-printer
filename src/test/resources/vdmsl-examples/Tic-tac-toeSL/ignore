@@ -1,3 +1,0 @@
-Overture ADefPatternBind has toString() that include lexing location. As module equals() uses toString(), this means that two identical modules parsed from different files can never be equal.
-Branch issue684-filenamesInToString adds a better toString() to ADefPatternBind
-see https://github.com/overturetool/overture/issues/684
