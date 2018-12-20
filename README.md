@@ -10,7 +10,7 @@ The principal motivation for creating this pretty printer was to produce HTML re
 We believe that this tool will provide useful to most VDM practitioners, but there is still some work required to guarantee the renderings produced (see [Known issues](#known-issues)). We are continuing to work on improving the range of language supported and the range and quality of the renderings (e.g. more intelligent line splitting). 
 
 ## Version
-This page was last updated, to correctly describe the use and behaviour of version **2.6.2** of the pretty printer.
+This page was last updated, to correctly describe the use and behaviour of version **2.6.4** of the pretty printer.
 
 Version numbers are currently tied to the version of Overture that the pretty printer is compiled against.
 
