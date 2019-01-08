@@ -1,3 +1,3 @@
-Overture ADefPatternBind has toString() that include lexing location. As module equals() uses toString(), this means that two identical modules parsed from different files can never be equal.
-Branch issue684-filenamesInToString adds a better toString() to ADefPatternBind
-see https://github.com/overturetool/overture/issues/684
+Overture creates define statements as let statements.
+Branch issue683-addExplicitDefineStatements adds an ADefStm to the AST that enables us to disambiguate. When run with that code this test passes.
+see https://github.com/overturetool/overture/issues/683

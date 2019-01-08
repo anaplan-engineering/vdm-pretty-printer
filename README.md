@@ -10,7 +10,7 @@ The principal motivation for creating this pretty printer was to produce HTML re
 We believe that this tool will provide useful to most VDM practitioners, but there is still some work required to guarantee the renderings produced (see [Known issues](#known-issues)). We are continuing to work on improving the range of language supported and the range and quality of the renderings (e.g. more intelligent line splitting). 
 
 ## Version
-This page was last updated, to correctly describe the use and behaviour of version **2.6.2** of the pretty printer.
+This page was last updated, to correctly describe the use and behaviour of version **2.6.4** of the pretty printer.
 
 Version numbers are currently tied to the version of Overture that the pretty printer is compiled against.
 
@@ -117,15 +117,4 @@ This causes the following test examples to fail. Each of these tests passes when
 - stackPP
 - PacemakerConcPP
 - expressSL
-
-
-### Filename included in ADefPatternBind toString() (and thus equals())
-
-See https://github.com/overturetool/overture/issues/684
-
-ADefPatternBind has a toString() method that includes the lexing location. As module equals() uses toString(), this means that two identical modules parsed from different files can never be equal.
-
-This causes the following test examples to fail. Each of these tests passes when run with a patched version of Overture (see https://github.com/anaplan-engineering/overture/tree/removeFileNamesFromADefPatternBindString)
-
 - MetroInterlockingPP
-- Tic-tac-toeSL
