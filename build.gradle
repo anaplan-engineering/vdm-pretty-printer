@@ -53,7 +53,7 @@ dependencies {
     implementation group: 'org.overturetool.core', name: 'interpreter', version: overtureVersion
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
-    testImplementation group: 'org.mokito.kotlin', name: 'mockito-kotlin', version: '4.0.0'
+    testImplementation group: 'org.mockito.kotlin', name: 'mockito-kotlin', version: '4.0.0'
 }
 
 
