@@ -590,7 +590,7 @@ class VdmPrettyPrinter(
         fun processDefsOfType(clazz: Class<*>, defs: List<PDefinition>): (RenderBuilder) -> RenderBuilder {
             val section = sectionTypes.get(clazz) ?: throw IllegalArgumentException("Unexpected definition type $clazz")
             return { builder ->
-                builder.token(token as RenderToken).addNavigationMarks(section).nl().vspace().incIndent(). //
+                builder.token(section.token as RenderToken).addNavigationMarks(section).nl().vspace().incIndent(). //
                         nodeList(defs, listOf(semiColon, newLine, newLine), { node ->
                             if (node is PDefinitionBase && node.name != null) {
                                 NavigationMarker(node.name.simpleName)
