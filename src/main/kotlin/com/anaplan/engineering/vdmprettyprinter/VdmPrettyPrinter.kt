@@ -25,6 +25,9 @@ import com.anaplan.engineering.vdmprettyprinter.PrecedenceManager.expRequiresPar
 import com.anaplan.engineering.vdmprettyprinter.PrecedenceManager.typeRequiresParentheses
 import com.anaplan.engineering.vdmprettyprinter.RenderToken.*
 import org.overture.ast.analysis.intf.IQuestionAnswer
+import org.overture.ast.annotations.AAnnotationAnnotation
+import org.overture.ast.annotations.Annotation
+import org.overture.ast.annotations.PAnnotation
 import org.overture.ast.definitions.*
 import org.overture.ast.definitions.relations.AEqRelation
 import org.overture.ast.definitions.relations.AOrdRelation
@@ -45,6 +48,7 @@ import org.overture.ast.typechecker.Pass
 import org.overture.ast.types.*
 import org.overture.ast.util.ClonableFile
 import org.overture.ast.util.ClonableString
+import org.overture.ast.util.PTypeSet
 
 class VdmPrettyPrinter(
         val renderStrategy: IRenderStrategy = PlainAsciiTextRenderStrategy()
@@ -590,7 +594,7 @@ class VdmPrettyPrinter(
         fun processDefsOfType(clazz: Class<*>, defs: List<PDefinition>): (RenderBuilder) -> RenderBuilder {
             val section = sectionTypes.get(clazz) ?: throw IllegalArgumentException("Unexpected definition type $clazz")
             return { builder ->
-                builder.token(section.token as RenderToken).addNavigationMarks(section).nl().vspace().incIndent(). //
+                builder.token(token as RenderToken).addNavigationMarks(section).nl().vspace().incIndent(). //
                         nodeList(defs, listOf(semiColon, newLine, newLine), { node ->
                             if (node is PDefinitionBase && node.name != null) {
                                 NavigationMarker(node.name.simpleName)
@@ -862,6 +866,10 @@ class VdmPrettyPrinter(
 
     override fun caseAAbsoluteUnaryExp(node: AAbsoluteUnaryExp, context: IRenderContext) =
             renderLeftRightSUnaryExp(node, absLeft, absRight, context)
+
+    override fun caseAAnnotatedUnaryExp(node: AAnnotatedUnaryExp, context: IRenderContext) = unhandled(node.javaClass, context)
+
+    override fun caseAAnnotatedStm(node: AAnnotatedStm, context: IRenderContext) = unhandled(node.javaClass, context)
 
     override fun defaultSMapType(node: SMapType, context: IRenderContext) = unhandled(node.javaClass, context)
 
@@ -1160,6 +1168,14 @@ class VdmPrettyPrinter(
 
     override fun caseILexLocation(node: ILexLocation, context: IRenderContext) = unhandled(node.javaClass, context)
 
+    override fun caseILexComment(node: ILexComment, context: IRenderContext) = unhandled(node.javaClass, context)
+
+    override fun caseILexCommentList(node: ILexCommentList, context: IRenderContext) = unhandled(node.javaClass, context)
+
+    override fun caseAnnotation(node: Annotation, context: IRenderContext) = unhandled(node.javaClass, context)
+
+    override fun casePTypeSet(node: PTypeSet, context: IRenderContext) = unhandled(node.javaClass, context)
+
     override fun casePass(node: Pass, context: IRenderContext) = unhandled(node.javaClass, context)
 
     override fun caseAPatternTypePair(node: APatternTypePair, context: IRenderContext) =
@@ -1436,6 +1452,10 @@ class VdmPrettyPrinter(
                     }).render
 
     override fun defaultPCase(node: PCase, context: IRenderContext) = unhandled(node.javaClass, context)
+
+    override fun defaultPAnnotation(node: PAnnotation, context: IRenderContext) = unhandled(node.javaClass, context)
+
+    override fun caseAAnnotationAnnotation(node: AAnnotationAnnotation, context: IRenderContext) = unhandled(node.javaClass, context)
 
     override fun caseAPrivateAccess(node: APrivateAccess, context: IRenderContext) =
             throw IllegalStateException("Private access is not printed as it is default")

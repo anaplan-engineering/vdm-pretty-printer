@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.anaplan.engineering'
-version = '2.6.5-SNAPSHOT'
+version = '3.0.2'
 
 apply plugin: 'kotlin'
 
