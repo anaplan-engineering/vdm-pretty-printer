@@ -408,16 +408,12 @@ class VdmPrettyPrinter(
     override fun caseAPlusPlusBinaryExp(node: APlusPlusBinaryExp, context: IRenderContext) = renderSBinaryExp(node, context)
 
     override fun caseASeqCompSeqExp(node: ASeqCompSeqExp, context: IRenderContext): String {
-        return builder(context).token(lsquare).node(node.first).space().token(pipe).space(). //
-                conditional(node.seqBind == null, {
-                    it.node(node.setBind)
-                }, {
-                    it.node(node.seqBind)
-                }). //
-                conditional(node.predicate != null, {
+        return builder(context).token(lsquare).node(node.first).space().token(pipe).space()
+                .node(node.bind)
+                .conditional(node.predicate != null) {
                     it.space().token(bullet).space().node(node.predicate)
-                }). //
-                token(rsquare).render
+                }
+                .token(rsquare).render
     }
 
     override fun caseAFieldStateDesignator(node: AFieldStateDesignator, context: IRenderContext) =
