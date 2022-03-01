@@ -28,22 +28,22 @@ class MathematicalUnicodeHtmlRenderStrategyTest : VdmPrettyPrinterTest() {
     }
 
     override fun getExpectedNamedInvariantTypeContextSpec() =
-            """|<h3>types</h3><div id='types'/><br/>
-               |<div id='a'/>&nbsp;&nbsp;a&nbsp;=&nbsp;<i>char</i>&nbsp;|&nbsp;ℝ<br/>
-               |<h3>values</h3><div id='values'/><br/>
-               |&nbsp;&nbsp;b:&nbsp;a&nbsp;=&nbsp;0<br/>
-               |<br/>
-               |""".trimMargin()
+        """|<h3>types</h3><div id='types'/><br/>
+           |<div id='a'/>&nbsp;&nbsp;a&nbsp;=&nbsp;<i>char</i>&nbsp;|&nbsp;ℝ<br/>
+           |<h3>values</h3><div id='values'/><br/>
+           |&nbsp;&nbsp;b:&nbsp;a&nbsp;=&nbsp;0<br/>
+           |<br/>
+           |""".trimMargin()
 
     override fun getExpectedStructuredTypeContextSpec() =
-            """|<h3>types</h3><div id='types'/><br/>
-               |<div id='a'/>&nbsp;&nbsp;a&nbsp;::&nbsp;<br/>
-               |&nbsp;&nbsp;&nbsp;&nbsp;b&nbsp;:&nbsp;ℤ<br/>
-               |&nbsp;&nbsp;&nbsp;&nbsp;c&nbsp;:&nbsp;ℝ<br/>
-               |<h3>values</h3><div id='values'/><br/>
-               |&nbsp;&nbsp;d&nbsp;=&nbsp;<b>mk_</b>a(1,&nbsp;2.0)<br/>
-               |<br/>
-               |""".trimMargin()
+        """|<h3>types</h3><div id='types'/><br/>
+           |<div id='a'/>&nbsp;&nbsp;a&nbsp;::&nbsp;<br/>
+           |&nbsp;&nbsp;&nbsp;&nbsp;b&nbsp;:&nbsp;ℤ<br/>
+           |&nbsp;&nbsp;&nbsp;&nbsp;c&nbsp;:&nbsp;ℝ<br/>
+           |<h3>values</h3><div id='values'/><br/>
+           |&nbsp;&nbsp;d&nbsp;=&nbsp;<b>mk_</b>a(1,&nbsp;2.0)<br/>
+           |<br/>
+           |""".trimMargin()
 
     override fun getExpectedAQuoteType() = "<b>&lt;abc&gt;</b>"
 
@@ -54,28 +54,28 @@ class MathematicalUnicodeHtmlRenderStrategyTest : VdmPrettyPrinterTest() {
     override fun getExpectedATypeDefinition() = "a&nbsp;=&nbsp;<i>char</i>&nbsp;|&nbsp;ℝ"
 
     override fun getExpectedAIfExp() =
-            """|<b>if</b>&nbsp;b<br/>
-               |<b>then</b>&nbsp;<i>false</i><br/>
-               |<b>else</b>&nbsp;<i>true</i>""".trimMargin()
+        """|<b>if</b>&nbsp;b<br/>
+           |<b>then</b>&nbsp;<i>false</i><br/>
+           |<b>else</b>&nbsp;<i>true</i>""".trimMargin()
 
     override fun getExpectedALetDefExp() =
-            """|<b>let</b><br/>
-               |&nbsp;&nbsp;b&nbsp;=&nbsp;1,<br/>
-               |&nbsp;&nbsp;c&nbsp;=&nbsp;2<br/>
-               |<b>in</b><br/>
-               |&nbsp;&nbsp;b&nbsp;+&nbsp;c""".trimMargin()
+        """|<b>let</b><br/>
+           |&nbsp;&nbsp;b&nbsp;=&nbsp;1,<br/>
+           |&nbsp;&nbsp;c&nbsp;=&nbsp;2<br/>
+           |<b>in</b><br/>
+           |&nbsp;&nbsp;b&nbsp;+&nbsp;c""".trimMargin()
 
     override fun getExpectedAExplicitFunctionDefinition() =
-            """|fun1:&nbsp;${BOOL}&nbsp;→&nbsp;${BOOL}<br/>
-               |fun1(b)&nbsp;⧋<br/>
-               |&nbsp;&nbsp;<b>if</b>&nbsp;b<br/>
-               |&nbsp;&nbsp;<b>then</b>&nbsp;<i>false</i><br/>
-               |&nbsp;&nbsp;<b>else</b>&nbsp;<i>true</i>""".trimMargin()
+        """|fun1:&nbsp;${BOOL}&nbsp;→&nbsp;${BOOL}<br/>
+           |fun1(b)&nbsp;⧋<br/>
+           |&nbsp;&nbsp;<b>if</b>&nbsp;b<br/>
+           |&nbsp;&nbsp;<b>then</b>&nbsp;<i>false</i><br/>
+           |&nbsp;&nbsp;<b>else</b>&nbsp;<i>true</i>""".trimMargin()
 
     override fun getExpectedAImplicitFunctionDefinition() =
-            """|Log10(number:&nbsp;ℝ)&nbsp;result:&nbsp;ℝ&nbsp;⧋<br/>
-               |&nbsp;&nbsp;Log(number,&nbsp;10)<br/>
-               |<b>post</b>&nbsp;10&nbsp;↑&nbsp;result&nbsp;=&nbsp;number""".trimMargin()
+        """|Log10(number:&nbsp;ℝ)&nbsp;result:&nbsp;ℝ&nbsp;⧋<br/>
+           |&nbsp;&nbsp;Log(number,&nbsp;10)<br/>
+           |<b>post</b>&nbsp;10&nbsp;↑&nbsp;result&nbsp;=&nbsp;number""".trimMargin()
 
     override fun getExpectedAPatternTypePair() = "result:&nbsp;ℝ"
 

@@ -21,8 +21,6 @@
  */
 package com.anaplan.engineering.vdmprettyprinter
 
-import kotlin.test.assertEquals
-import kotlin.test.Test
 import org.overture.ast.definitions.AExplicitFunctionDefinition
 import org.overture.ast.definitions.AImplicitFunctionDefinition
 import org.overture.ast.definitions.ATypeDefinition
@@ -39,6 +37,8 @@ import org.overture.ast.types.AUnionType
 import org.overture.interpreter.VDMSL
 import java.io.File
 import java.nio.file.Files
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 abstract class VdmPrettyPrinterTest {
@@ -186,7 +186,10 @@ abstract class VdmPrettyPrinterTest {
     }
 
     private fun prettyPrint(node: INode) =
-            VdmPrettyPrinter(renderStrategy = getRenderStrategy()).prettyPrint(node, config = PrettyPrintConfig(includeHeaderFooter = false))
+        VdmPrettyPrinter(renderStrategy = getRenderStrategy()).prettyPrint(
+            node,
+            config = PrettyPrintConfig(includeHeaderFooter = false)
+        )
 
     private fun onlyExplicitFunction(spec: String) = onlyDefinition(spec, AExplicitFunctionDefinition::class.java)
     private fun onlyImplicitFunction(spec: String) = onlyDefinition(spec, AImplicitFunctionDefinition::class.java)

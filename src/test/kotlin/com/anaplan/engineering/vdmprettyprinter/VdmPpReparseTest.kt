@@ -21,14 +21,14 @@
  */
 package com.anaplan.engineering.vdmprettyprinter
 
-import kotlin.test.assertEquals
-import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import org.overture.interpreter.VDMPP
 import org.overture.interpreter.util.ClassListInterpreter
 import java.io.File
 import java.nio.file.Files
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 /**
  * Flow of this test is to:
@@ -63,7 +63,11 @@ class VdmPpReparseTest(val exampleDir: String) {
         val firstParseResult = parseAndPrettyPrintVdmPp(inputDirectory)
         val secondParseResult = parseAndPrettyPrintVdmPp(firstParseResult.prettyPrintOutputDirectory)
         checkClasses(firstParseResult.classes, secondParseResult.classes)
-        checkRenderings(firstParseResult.prettyPrintOutputDirectory, secondParseResult.prettyPrintOutputDirectory, vdmPpFileExtension)
+        checkRenderings(
+            firstParseResult.prettyPrintOutputDirectory,
+            secondParseResult.prettyPrintOutputDirectory,
+            vdmPpFileExtension
+        )
     }
 
     private fun parseAndPrettyPrintVdmPp(inputDirectory: File): ClassParseAndPrettyPrintResult {
@@ -75,20 +79,24 @@ class VdmPpReparseTest(val exampleDir: String) {
 }
 
 internal data class ClassParseAndPrettyPrintResult(
-        val classes: ClassListInterpreter,
-        val prettyPrintOutputDirectory: File
+    val classes: ClassListInterpreter,
+    val prettyPrintOutputDirectory: File
 )
 
 internal fun prettyPrintClasses(classes: ClassListInterpreter): ClassParseAndPrettyPrintResult {
     val prettyPrinter = VdmPrettyPrinter(renderStrategy = PlainAsciiTextRenderStrategy())
     val outputDirectory = Files.createTempDirectory(VdmPpReparseTest.vdmPpFileExtension)
     classes.forEach { clazz ->
-        outputDirectory.resolve("${clazz.name.name}.${VdmPpReparseTest.vdmPpFileExtension}").toFile().writeText(prettyPrinter.prettyPrint(clazz,
-                config = PrettyPrintConfig(logUnhandledCases = true, minListLengthToUseNls = 10)))
+        outputDirectory.resolve("${clazz.name.name}.${VdmPpReparseTest.vdmPpFileExtension}").toFile().writeText(
+            prettyPrinter.prettyPrint(
+                clazz,
+                config = PrettyPrintConfig(logUnhandledCases = true, minListLengthToUseNls = 10)
+            )
+        )
     }
     return ClassParseAndPrettyPrintResult(
-            prettyPrintOutputDirectory = outputDirectory.toFile(),
-            classes = classes
+        prettyPrintOutputDirectory = outputDirectory.toFile(),
+        classes = classes
     )
 }
 
