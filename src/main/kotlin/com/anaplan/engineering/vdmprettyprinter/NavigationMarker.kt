@@ -22,8 +22,8 @@
 package com.anaplan.engineering.vdmprettyprinter
 
 data class NavigationMarker(
-        val id: String,
-        val token: RenderToken? = null
+    val id: String,
+    val token: RenderToken? = null
 ) {
     companion object {
         val module = NavigationMarker("module", RenderToken.module)

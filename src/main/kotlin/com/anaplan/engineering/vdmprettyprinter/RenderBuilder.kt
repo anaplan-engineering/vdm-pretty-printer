@@ -32,9 +32,9 @@ import org.overture.ast.node.INode
 import org.overture.ast.types.PType
 
 internal class RenderBuilder(
-        private val vdmPrettyPrinter: VdmPrettyPrinter,
-        private val context: IRenderContext,
-        val render: String = ""
+    private val vdmPrettyPrinter: VdmPrettyPrinter,
+    private val context: IRenderContext,
+    val render: String = ""
 ) {
     internal val strategy: IRenderStrategy
         get() = vdmPrettyPrinter.renderStrategy
@@ -68,9 +68,15 @@ internal class RenderBuilder(
     internal fun nl() = RenderBuilder(vdmPrettyPrinter, context.markNewLine(), render + strategy.renderToken(newLine))
     internal fun vspace() = RenderBuilder(vdmPrettyPrinter, context.markNewLine(), render + strategy.vspace)
 
-    internal fun addNavigationMarks(marker: NavigationMarker) = RenderBuilder(vdmPrettyPrinter, context, render + strategy.renderNavigationMarker(marker))
-    internal fun setCurrentContainer(module: AModuleModules) = RenderBuilder(vdmPrettyPrinter, context.setCurrentContainer(module), render)
-    internal fun setCurrentContainer(vdmClass: SClassDefinitionBase) = RenderBuilder(vdmPrettyPrinter, context.setCurrentContainer(vdmClass), render)
+    internal fun addNavigationMarks(marker: NavigationMarker) =
+        RenderBuilder(vdmPrettyPrinter, context, render + strategy.renderNavigationMarker(marker))
+
+    internal fun setCurrentContainer(module: AModuleModules) =
+        RenderBuilder(vdmPrettyPrinter, context.setCurrentContainer(module), render)
+
+    internal fun setCurrentContainer(vdmClass: SClassDefinitionBase) =
+        RenderBuilder(vdmPrettyPrinter, context.setCurrentContainer(vdmClass), render)
+
     internal fun setTypeDef() = RenderBuilder(vdmPrettyPrinter, context.setTypeDef(), render)
     internal fun unsetTypeDef() = RenderBuilder(vdmPrettyPrinter, context.unsetTypeDef(), render)
 
@@ -82,10 +88,10 @@ internal class RenderBuilder(
     }
 
     internal fun nodeList(
-            nodeList: List<INode>,
-            separators: List<RenderToken> = listOf(comma, space),
-            getNavigationMarker: (INode) -> NavigationMarker? = { null },
-            renderNode: (INode, RenderBuilder) -> RenderBuilder = { node, builder -> builder.node(node) }
+        nodeList: List<INode>,
+        separators: List<RenderToken> = listOf(comma, space),
+        getNavigationMarker: (INode) -> NavigationMarker? = { null },
+        renderNode: (INode, RenderBuilder) -> RenderBuilder = { node, builder -> builder.node(node) }
     ): RenderBuilder {
         val builder = MutableRenderBuilder(this)
         val useImplicitNls = nodeList.size >= config.minListLengthToUseNls && !separators.contains(newLine)
@@ -124,17 +130,17 @@ internal class RenderBuilder(
     // Don't have an example spec where we actually need this beyond a single element node list list, will likely
     // need to be refactored/improved when we do
     internal fun nodeListList(
-            nodeListList: List<List<INode>>,
-            separators: List<RenderToken> = listOf(comma, space),
-            delimiters: Pair<RenderToken, RenderToken> = Pair(lparens, rparens)
+        nodeListList: List<List<INode>>,
+        separators: List<RenderToken> = listOf(comma, space),
+        delimiters: Pair<RenderToken, RenderToken> = Pair(lparens, rparens)
     ): RenderBuilder {
         val builder = MutableRenderBuilder(this)
         builder.setLineState(newLineState = LineState.indented)
         val separatorString = separators.map { strategy.renderToken(it) }.joinToString("")
         builder.append(nodeListList.map { nodeList ->
             strategy.renderToken(delimiters.first) +
-                    nodeList.map { it.apply(vdmPrettyPrinter, context) }.joinToString(separatorString) +
-                    strategy.renderToken(delimiters.second)
+                nodeList.map { it.apply(vdmPrettyPrinter, context) }.joinToString(separatorString) +
+                strategy.renderToken(delimiters.second)
         }.joinToString(""))
         return builder.build()
     }
@@ -143,9 +149,9 @@ internal class RenderBuilder(
     internal fun decIndent() = RenderBuilder(vdmPrettyPrinter, context.decIndent(), render)
 
     internal fun conditional(
-            condition: Boolean,
-            trueExpression: (RenderBuilder) -> RenderBuilder,
-            falseExpression: (RenderBuilder) -> RenderBuilder
+        condition: Boolean,
+        trueExpression: (RenderBuilder) -> RenderBuilder,
+        falseExpression: (RenderBuilder) -> RenderBuilder
     ) = if (condition) {
         trueExpression(this)
     } else {
@@ -153,8 +159,8 @@ internal class RenderBuilder(
     }
 
     internal fun conditional(
-            condition: Boolean,
-            trueExpression: (RenderBuilder) -> RenderBuilder
+        condition: Boolean,
+        trueExpression: (RenderBuilder) -> RenderBuilder
     ) = conditional(condition, trueExpression, { it })
 
     internal fun apply(fn: (RenderBuilder) -> RenderBuilder) = fn(this)
@@ -168,8 +174,8 @@ internal class RenderBuilder(
     }
 
     internal fun ifTypeDef(
-            trueExpression: (RenderBuilder) -> RenderBuilder,
-            falseExpression: (RenderBuilder) -> RenderBuilder
+        trueExpression: (RenderBuilder) -> RenderBuilder,
+        falseExpression: (RenderBuilder) -> RenderBuilder
     ) = if (context.typeDef) {
         trueExpression(this)
     } else {
@@ -177,8 +183,8 @@ internal class RenderBuilder(
     }
 
     internal fun unlessModuleIs(
-            module: String,
-            trueExpression: (RenderBuilder) -> RenderBuilder
+        module: String,
+        trueExpression: (RenderBuilder) -> RenderBuilder
     ) = if (context.containerName != module) {
         trueExpression(this)
     } else {
@@ -214,27 +220,27 @@ internal class RenderBuilder(
     }
 
     internal fun childExpression(child: PExp, parent: PExp, position: Position) =
-            conditional(expRequiresParentheses(child, parent, position == Position.right), {
-                it.lparens()
-            }). //
-                    node(child). //
-                    conditional(expRequiresParentheses(child, parent, position == Position.right), {
-                        it.rparens()
-                    })
+        conditional(expRequiresParentheses(child, parent, position == Position.right), {
+            it.lparens()
+        }). //
+        node(child). //
+        conditional(expRequiresParentheses(child, parent, position == Position.right), {
+            it.rparens()
+        })
 
     internal fun childType(child: PType, parent: PType) =
-            conditional(typeRequiresParentheses(child, parent), {
-                it.lparens()
-            }). //
-                    node(child). //
-                    conditional(typeRequiresParentheses(child, parent), {
-                        it.rparens()
-                    })
+        conditional(typeRequiresParentheses(child, parent), {
+            it.lparens()
+        }). //
+        node(child). //
+        conditional(typeRequiresParentheses(child, parent), {
+            it.rparens()
+        })
 
     private class MutableRenderBuilder(
-            val renderBuilder: RenderBuilder,
-            var context: IRenderContext = renderBuilder.context,
-            val render: StringBuilder = StringBuilder(renderBuilder.render)
+        val renderBuilder: RenderBuilder,
+        var context: IRenderContext = renderBuilder.context,
+        val render: StringBuilder = StringBuilder(renderBuilder.render)
     ) {
 
         internal fun applyIndent() {
