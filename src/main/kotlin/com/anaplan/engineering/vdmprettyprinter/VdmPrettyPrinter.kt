@@ -75,11 +75,11 @@ class VdmPrettyPrinter(
     }
 
     private fun renderSBinaryExp(node: SBinaryExp, context: IRenderContext) =
-        builder(context). //
-        childExpression(node.left, node, RenderBuilder.Position.left). //
-        space().node(node.op).space(). //
-        childExpression(node.right, node, RenderBuilder.Position.right). //
-        render
+        builder(context)
+            .childExpression(node.left, node, RenderBuilder.Position.left)
+            .space().node(node.op).space()
+            .childExpression(node.right, node, RenderBuilder.Position.right)
+            .render
 
     private fun renderSUnaryExp(
         node: SUnaryExp,
@@ -87,17 +87,17 @@ class VdmPrettyPrinter(
         context: IRenderContext,
         requiresSpace: Boolean = true
     ) =
-        builder(context).token(token). //
-        conditional(expRequiresParentheses(node.exp, node, true), {
-            it.lparens()
-        }, {
-            it.conditional(requiresSpace, { it.space() })
-        }). //
-        node(node.exp). //
-        conditional(expRequiresParentheses(node.exp, node, true), {
-            it.rparens()
-        }). //
-        render
+        builder(context).token(token)
+            .conditional(expRequiresParentheses(node.exp, node, true), {
+                it.lparens()
+            }, {
+                it.conditional(requiresSpace, { it.space() })
+            })
+            .node(node.exp)
+            .conditional(expRequiresParentheses(node.exp, node, true), {
+                it.rparens()
+            })
+            .render
 
     private fun renderLeftRightSUnaryExp(
         node: SUnaryExp,
@@ -105,16 +105,16 @@ class VdmPrettyPrinter(
         right: RenderToken,
         context: IRenderContext
     ) =
-        builder(context). //
-        token(left). //
-        conditional(expRequiresParentheses(node.exp, node, true) && !renderStrategy.replacesParentheses(left), {
-            it.lparens()
-        }). //
-        node(node.exp).token(right). //
-        conditional(expRequiresParentheses(node.exp, node, true) && !renderStrategy.replacesParentheses(left), {
-            it.rparens()
-        }). //
-        render
+        builder(context)
+            .token(left)
+            .conditional(expRequiresParentheses(node.exp, node, true) && !renderStrategy.replacesParentheses(left), {
+                it.lparens()
+            })
+            .node(node.exp).token(right)
+            .conditional(expRequiresParentheses(node.exp, node, true) && !renderStrategy.replacesParentheses(left), {
+                it.rparens()
+            })
+            .render
 
     private fun renderToken(token: RenderToken, context: IRenderContext) = builder(context).token(token).render
 
@@ -157,19 +157,19 @@ class VdmPrettyPrinter(
     override fun defaultPAlternative(node: PAlternative, context: IRenderContext) = unhandled(node.javaClass, context)
 
     override fun caseANamedTraceDefinition(node: ANamedTraceDefinition, context: IRenderContext) =
-        builder(context).token(node.pathname.joinToString(", ")).token(colon).incIndent().nl(). //
-        nodeList(node.terms, listOf(semiColon, newLine)).render
+        builder(context).token(node.pathname.joinToString(", ")).token(colon).incIndent().nl()
+            .nodeList(node.terms, listOf(semiColon, newLine)).render
 
     override fun caseALetBeStStm(node: ALetBeStStm, context: IRenderContext) =
-        builder(context). //
-        conditional(context.lineState == LineState.tokened, {
-            it.nl().incIndent()
-        }). //
-        token(let).space().node(node.bind). //
-        conditional(node.suchThat != null, {
-            it.space().token(be).space().token(st).nl().incIndent().node(node.suchThat).decIndent()
-        }). //
-        nl().token(inToken).space().node(node.statement).render
+        builder(context)
+            .conditional(context.lineState == LineState.tokened, {
+                it.nl().incIndent()
+            })
+            .token(let).space().node(node.bind)
+            .conditional(node.suchThat != null, {
+                it.space().token(be).space().token(st).nl().incIndent().node(node.suchThat).decIndent()
+            })
+            .nl().token(inToken).space().node(node.statement).render
 
     override fun defaultPStmtAlternative(node: PStmtAlternative, context: IRenderContext) =
         unhandled(node.javaClass, context)
@@ -192,29 +192,29 @@ class VdmPrettyPrinter(
         renderClass(node, NavigationMarker.bus, context)
 
     override fun caseAAtomicStm(node: AAtomicStm, context: IRenderContext) =
-        builder(context).token(atomic).space().lparens().nl().incIndent(). //
-        nodeList(node.assignments, listOf(semiColon, newLine)).nl().decIndent(). //
-        rparens().render
+        builder(context).token(atomic).space().lparens().nl().incIndent()
+            .nodeList(node.assignments, listOf(semiColon, newLine)).nl().decIndent()
+            .rparens().render
 
     override fun caseAOptionalType(node: AOptionalType, context: IRenderContext) =
         builder(context).token(lsquare).node(node.type).token(rsquare).render
 
     override fun caseAElseIfExp(node: AElseIfExp, context: IRenderContext) =
-        builder(context).token(elseif).space().node(node.elseIf).nl(). //
-        token(then).space().node(node.then).render
+        builder(context).token(elseif).space().node(node.elseIf).nl()
+            .token(then).space().node(node.then).render
 
     override fun caseADefPatternBind(node: ADefPatternBind, context: IRenderContext) =
-        builder(context). //
+        builder(context)
             // TODO - can bind and pattern both be null or non-null??
-        conditional(node.pattern == null, {
-            it.node(node.bind)
-        }, {
-            it.node(node.pattern)
-        }). //
-        conditional(node.type != null, {
-            it.token(colon).space().node(node.type)
-        }).//
-        render
+            .conditional(node.pattern == null, {
+                it.node(node.bind)
+            }, {
+                it.node(node.pattern)
+            })
+            .conditional(node.type != null, {
+                it.token(colon).space().node(node.type)
+            })
+            .render
 
     override fun defaultSNumericBinaryExp(node: SNumericBinaryExp, context: IRenderContext) =
         renderSBinaryExp(node, context)
@@ -234,12 +234,12 @@ class VdmPrettyPrinter(
     override fun caseATixeStm(node: ATixeStm, context: IRenderContext) = unhandled(node.javaClass, context)
 
     override fun caseAForPatternBindStm(node: AForPatternBindStm, context: IRenderContext) =
-        builder(context).token(forToken).space().node(node.patternBind).space().token(inToken).space(). //
-        conditional(node.reverse, {
-            it.token(reverse).space()
-        }). //
-        node(node.exp).nl(). //
-        token(doToken).space().node(node.statement).render
+        builder(context).token(forToken).space().node(node.patternBind).space().token(inToken).space()
+            .conditional(node.reverse, {
+                it.token(reverse).space()
+            })
+            .node(node.exp).nl()
+            .token(doToken).space().node(node.statement).render
 
     override fun caseAQuotePattern(node: AQuotePattern, context: IRenderContext) =
         builder(context).token(lquote).token(node.value.value).token(rquote).render
@@ -270,9 +270,9 @@ class VdmPrettyPrinter(
     override fun caseATimeExp(node: ATimeExp, context: IRenderContext) = renderToken(time, context)
 
     override fun caseAErrorCase(node: AErrorCase, context: IRenderContext) =
-        builder(context).node(node.name).token(colon).incIndent().nl(). //
-        node(node.left).nl(). //
-        token(partialFunction).space().node(node.right).render
+        builder(context).node(node.name).token(colon).incIndent().nl()
+            .node(node.left).nl()
+            .token(partialFunction).space().node(node.right).render
 
     override fun defaultPType(node: PType, context: IRenderContext) = unhandled(node.javaClass, context)
 
@@ -381,25 +381,26 @@ class VdmPrettyPrinter(
 
     override fun caseARecordInvariantType(node: ARecordInvariantType, context: IRenderContext) =
         builder(context).ifTypeDef({
-            it.nl().incIndent().unsetTypeDef(). //
-            nodeList(node.fields, listOf(newLine))
+            it.nl().incIndent().unsetTypeDef()
+                .nodeList(node.fields, listOf(newLine))
         }, {
             it.name(node.name)
         }).render
 
     override fun caseAMapCompMapExp(node: AMapCompMapExp, context: IRenderContext) =
-        builder(context).token(lbrace).node(node.first).space().token(pipe).space().nodeList(node.bindings).//
-        conditional(node.predicate != null, {
-            it.space().token(bullet).space().node(node.predicate)
-        }).token(rbrace).render
+        builder(context).token(lbrace).node(node.first).space().token(pipe).space().nodeList(node.bindings)
+            .conditional(node.predicate != null, {
+                it.space().token(bullet).space().node(node.predicate)
+            }).token(rbrace).render
 
     override fun defaultPObjectDesignator(node: PObjectDesignator, context: IRenderContext) =
         unhandled(node.javaClass, context)
 
     override fun caseASubseqExp(node: ASubseqExp, context: IRenderContext) =
-        builder(context). //
-        childExpression(node.seq, node, RenderBuilder.Position.left). //
-        lparens().node(node.from).token(comma).space().token(range).token(comma).space().node(node.to).rparens().render
+        builder(context)
+            .childExpression(node.seq, node, RenderBuilder.Position.left)
+            .lparens().node(node.from).token(comma).space().token(range).token(comma).space().node(node.to)
+            .rparens().render
 
     override fun caseACharacterPattern(node: ACharacterPattern, context: IRenderContext) =
         builder(context).token(quote).node(node.value).token(quote).render
@@ -423,15 +424,15 @@ class VdmPrettyPrinter(
         unhandled(node.javaClass, context)
 
     override fun caseAValueDefinition(node: AValueDefinition, context: IRenderContext) =
-        builder(context). //
-        conditional(node.access != null, {
-            it.node(node.access)
-        }). //
-        node(node.pattern). //
+        builder(context)
+            .conditional(node.access != null, {
+                it.node(node.access)
+            })
+            .node(node.pattern)
             // should only print the type if it can't be inferred from the expression
-        conditional(node.type != null && node.type != node.expType, {
-            it.token(colon).space().node(node.type)
-        }).space().token(equals).space().node(node.expression).render
+            .conditional(node.type != null && node.type != node.expType, {
+                it.token(colon).space().node(node.type)
+            }).space().token(equals).space().node(node.expression).render
 
     override fun caseAForAllExp(node: AForAllExp, context: IRenderContext) =
         builder(context).token(forall).space().nodeList(node.bindList).space().token(bullet).space()
@@ -484,36 +485,36 @@ class VdmPrettyPrinter(
     override fun defaultPModifier(node: PModifier, context: IRenderContext) = unhandled(node.javaClass, context)
 
     override fun caseABlockSimpleBlockStm(node: ABlockSimpleBlockStm, context: IRenderContext) =
-        builder(context).lparens().incIndent().nl(). //
-        conditional(node.assignmentDefs.isNotEmpty(), {
-            it.nodeList(node.assignmentDefs, listOf(semiColon, newLine)).token(semiColon).nl() //
-        }).nodeList(node.statements, listOf(semiColon, newLine)).token(semiColon).decIndent().nl(). //
-        rparens().render
+        builder(context).lparens().incIndent().nl()
+            .conditional(node.assignmentDefs.isNotEmpty(), {
+                it.nodeList(node.assignmentDefs, listOf(semiColon, newLine)).token(semiColon).nl() //
+            }).nodeList(node.statements, listOf(semiColon, newLine)).token(semiColon).decIndent().nl()
+            .rparens().render
 
     override fun caseAElseIfStm(node: AElseIfStm, context: IRenderContext) =
-        builder(context).token(elseif).space().node(node.elseIf).nl(). //
-        token(then).space().node(node.thenStm).render
+        builder(context).token(elseif).space().node(node.elseIf).nl()
+            .token(then).space().node(node.thenStm).render
 
     override fun caseALetStm(node: ALetStm, context: IRenderContext) =
-        builder(context). //
-        conditional(context.lineState == LineState.tokened, {
-            it.nl().incIndent()
-        }). //
-        token(let).nl().incIndent().//
-        nodeList(node.localDefs, listOf(comma, newLine)).nl(). //
-        decIndent().token(inToken).nl().incIndent(). //
-        node(node.statement).render
+        builder(context)
+            .conditional(context.lineState == LineState.tokened, {
+                it.nl().incIndent()
+            })
+            .token(let).nl().incIndent()
+            .nodeList(node.localDefs, listOf(comma, newLine)).nl()
+            .decIndent().token(inToken).nl().incIndent()
+            .node(node.statement).render
 
 
     override fun caseALetDefExp(node: ALetDefExp, context: IRenderContext) =
-        builder(context). //
-        conditional(context.lineState == LineState.tokened, {
-            it.nl().incIndent()
-        }). //
-        token(let).nl().incIndent(). //
-        nodeList(node.localDefs, listOf(comma, newLine)).nl(). //
-        decIndent().token(inToken).nl().incIndent(). //
-        node(node.expression).render
+        builder(context)
+            .conditional(context.lineState == LineState.tokened, {
+                it.nl().incIndent()
+            })
+            .token(let).nl().incIndent()
+            .nodeList(node.localDefs, listOf(comma, newLine)).nl()
+            .decIndent().token(inToken).nl().incIndent()
+            .node(node.expression).render
 
     override fun caseAMapletPatternMaplet(node: AMapletPatternMaplet, context: IRenderContext) =
         unhandled(node.javaClass, context)
@@ -537,52 +538,53 @@ class VdmPrettyPrinter(
         builder(context).node(node.tag).space().token(maplet).space().node(node.value).render
 
     override fun caseAMutexSyncDefinition(node: AMutexSyncDefinition, context: IRenderContext) =
-        builder(context).token(mutex).space().lparens(). //
-        conditional(node.operations.isEmpty(), {
-            it.token(all)
-        }, {
-            it.nodeList(node.operations)
-        }).rparens().render
+        builder(context).token(mutex).space().lparens()
+            .conditional(node.operations.isEmpty(), {
+                it.token(all)
+            }, {
+                it.nodeList(node.operations)
+            }).rparens().render
 
     override fun caseAClassType(node: AClassType, context: IRenderContext) = renderToken(node.name.name, context)
 
     override fun caseAFuncInstatiationExp(node: AFuncInstatiationExp, context: IRenderContext) =
-        builder(context). //
-        childExpression(node.function, node, RenderBuilder.Position.left). //
-        token(lsquare).nodeList(node.actualTypes).token(rsquare).render
+        builder(context)
+            .childExpression(node.function, node, RenderBuilder.Position.left)
+            .token(lsquare).nodeList(node.actualTypes).token(rsquare).render
 
 
     override fun caseAMkTypeExp(node: AMkTypeExp, context: IRenderContext) =
-        builder(context).token(mk_). //
-        conditional(node.type != null, {
-            it.node(node.type)
-        }). //
-        lparens().nodeList(node.args).rparens().render
+        builder(context).token(mk_)
+            .conditional(node.type != null, {
+                it.node(node.type)
+            })
+            .lparens().nodeList(node.args).rparens().render
 
     override fun caseClassDefinitionSettings(node: ClassDefinitionSettings, context: IRenderContext) =
         unhandled(node.javaClass, context)
 
     override fun caseAExplicitFunctionDefinition(node: AExplicitFunctionDefinition, context: IRenderContext) =
-        builder(context). //
-        conditional(node.access != null, {
-            it.node(node.access)
-        }). //
-        token(node.name.name). //
-        conditional(node.typeParams.isNotEmpty(), {
-            it.token(lsquare).token(paramType).nodeList(node.typeParams, listOf(comma, space, paramType)).token(rsquare)
-        }).token(colon).space().node(node.type).nl(). //
-        token(node.name.name).nodeListList(node.paramPatternList).space().token(fnEquals).nl().incIndent(). //
-        node(node.body).decIndent(). //
-        conditional(node.precondition != null, {
-            it.nl().token(pre).space().node(node.precondition)
-        }). //
-        conditional(node.postcondition != null, {
-            it.nl().token(post).space().node(node.postcondition)
-        }). //
-        conditional(node.measure != null, {
-            it.nl().token(measure).space().node(node.measure)
-        }). //
-        render
+        builder(context)
+            .conditional(node.access != null, {
+                it.node(node.access)
+            })
+            .token(node.name.name)
+            .conditional(node.typeParams.isNotEmpty(), {
+                it.token(lsquare).token(paramType).nodeList(node.typeParams, listOf(comma, space, paramType))
+                    .token(rsquare)
+            }).token(colon).space().node(node.type).nl()
+            .token(node.name.name).nodeListList(node.paramPatternList).space().token(fnEquals).nl().incIndent()
+            .node(node.body).decIndent()
+            .conditional(node.precondition != null, {
+                it.nl().token(pre).space().node(node.precondition)
+            })
+            .conditional(node.postcondition != null, {
+                it.nl().token(post).space().node(node.postcondition)
+            })
+            .conditional(node.measure != null, {
+                it.nl().token(measure).space().node(node.measure)
+            })
+            .render
 
     override fun caseAApplyExpressionTraceCoreDefinition(
         node: AApplyExpressionTraceCoreDefinition,
@@ -599,11 +601,11 @@ class VdmPrettyPrinter(
         unhandled(node.javaClass, context)
 
     override fun caseAMkBasicExp(node: AMkBasicExp, context: IRenderContext) =
-        builder(context).token(mk_). //
-        conditional(node.type != null, {
-            it.node(node.type)
-        }). //
-        lparens().node(node.arg).rparens().render
+        builder(context).token(mk_)
+            .conditional(node.type != null, {
+                it.node(node.type)
+            })
+            .lparens().node(node.arg).rparens().render
 
     override fun caseAModuleImports(node: AModuleImports, context: IRenderContext) =
         builder(context).nodeList(node.imports, listOf(comma, newLine, newLine)).render
@@ -646,14 +648,14 @@ class VdmPrettyPrinter(
         fun processDefsOfType(clazz: Class<*>, defs: List<PDefinition>): (RenderBuilder) -> RenderBuilder {
             val section = sectionTypes.get(clazz) ?: throw IllegalArgumentException("Unexpected definition type $clazz")
             return { builder ->
-                builder.token(section.token as RenderToken).addNavigationMarks(section).nl().vspace().incIndent(). //
-                nodeList(defs, listOf(semiColon, newLine, newLine), { node ->
-                    if (node is PDefinitionBase && node.name != null) {
-                        NavigationMarker(node.name.simpleName)
-                    } else {
-                        null
-                    }
-                }).nl().vspace().decIndent()
+                builder.token(section.token as RenderToken).addNavigationMarks(section).nl().vspace().incIndent()
+                    .nodeList(defs, listOf(semiColon, newLine, newLine), { node ->
+                        if (node is PDefinitionBase && node.name != null) {
+                            NavigationMarker(node.name.simpleName)
+                        } else {
+                            null
+                        }
+                    }).nl().vspace().decIndent()
             }
         }
 
@@ -679,24 +681,24 @@ class VdmPrettyPrinter(
                 { b: RenderBuilder -> b.apply(processDefsOfType(def.first, def.second)) }
             }
 
-        return builder(context).setCurrentContainer(node).//
-        conditional(node.name.name != defaultModuleName, {
-            it.token(module).space().token(node.name.name).addNavigationMarks(NavigationMarker.module).nl().vspace(). //
-            conditional(node.imports != null, {
-                it.token(imports).addNavigationMarks(NavigationMarker.imports).nl().vspace(). //
-                node(node.imports).nl().vspace()
-            }). //
-            conditional(node.exports != null, {
-                it.token(exports).addNavigationMarks(NavigationMarker.exports).nl().vspace(). //
-                node(node.exports).nl().vspace()
-            }). //
-            token(definitions).nl().vspace()
-        }). //
-        applyAll(processDefs()). //
-        nl(). //
-        conditional(node.name.name != defaultModuleName, {
-            it.token(end).space().token(node.name.name).nl()
-        }).render
+        return builder(context).setCurrentContainer(node)
+            .conditional(node.name.name != defaultModuleName, {
+                it.token(module).space().token(node.name.name).addNavigationMarks(NavigationMarker.module).nl().vspace()
+                    .conditional(node.imports != null, {
+                        it.token(imports).addNavigationMarks(NavigationMarker.imports).nl().vspace()
+                            .node(node.imports).nl().vspace()
+                    })
+                    .conditional(node.exports != null, {
+                        it.token(exports).addNavigationMarks(NavigationMarker.exports).nl().vspace()
+                            .node(node.exports).nl().vspace()
+                    })
+                    .token(definitions).nl().vspace()
+            })
+            .applyAll(processDefs())
+            .nl()
+            .conditional(node.name.name != defaultModuleName, {
+                it.token(end).space().token(node.name.name).nl()
+            }).render
     }
 
     override fun caseAOperationExport(node: AOperationExport, context: IRenderContext) =
@@ -722,8 +724,8 @@ class VdmPrettyPrinter(
 
     override fun caseAForAllStm(node: AForAllStm, context: IRenderContext) =
         builder(context).token(forToken).space().token(all).space().node(node.pattern).space().token(inSet).space()
-            .node(node.set).nl(). //
-        token(doToken).space().node(node.statement).render
+            .node(node.set).nl()
+            .token(doToken).space().node(node.statement).render
 
     override fun caseACharBasicType(node: ACharBasicType, context: IRenderContext) = renderToken(char, context)
 
@@ -769,23 +771,23 @@ class VdmPrettyPrinter(
         renderSBinaryExp(node, context)
 
     override fun caseAImplicitFunctionDefinition(node: AImplicitFunctionDefinition, context: IRenderContext) =
-        builder(context). //
-        conditional(node.access != null, {
-            it.node(node.access)
-        }). //
-        token(node.name.name). //
-        conditional(node.typeParams.isNotEmpty(), {
-            it.token(lsquare).nodeList(node.typeParams).token(rsquare)
-        }).lparens().nodeList(node.paramPatterns).rparens().space().node(node.result). //
-        conditional(node.body != null, {
-            it.space().token(fnEquals).incIndent().nl().node(node.body).decIndent()
-        }). //
-        conditional(node.precondition != null, {
-            it.nl().token(pre).space().node(node.precondition)
-        }). //
-        conditional(node.postcondition != null, {
-            it.nl().token(post).space().node(node.postcondition)
-        }).render
+        builder(context)
+            .conditional(node.access != null, {
+                it.node(node.access)
+            })
+            .token(node.name.name)
+            .conditional(node.typeParams.isNotEmpty(), {
+                it.token(lsquare).nodeList(node.typeParams).token(rsquare)
+            }).lparens().nodeList(node.paramPatterns).rparens().space().node(node.result)
+            .conditional(node.body != null, {
+                it.space().token(fnEquals).incIndent().nl().node(node.body).decIndent()
+            })
+            .conditional(node.precondition != null, {
+                it.nl().token(pre).space().node(node.precondition)
+            })
+            .conditional(node.postcondition != null, {
+                it.nl().token(post).space().node(node.postcondition)
+            }).render
 
     override fun caseATypeExport(node: ATypeExport, context: IRenderContext) =
         builder(context).conditional(node.struct, {
@@ -799,26 +801,27 @@ class VdmPrettyPrinter(
         builder(context).node(node.pattern).token(colon).space().node(node.type).render
 
     override fun caseATypeDefinition(node: ATypeDefinition, context: IRenderContext) =
-        builder(context). //
-        conditional(node.access != null, {
-            it.node(node.access)
-        }). //
-        token(node.name.name).space(). //
-        conditional(node.type is ARecordInvariantType, {
-            it.token(record)
-        }, {
-            it.token(equals)
-        }). //
-        space().setTypeDef().node(node.type).unsetTypeDef(). //
-        conditional(node.invPattern != null, {
-            it.nl().token(inv).space().node(node.invPattern).space().token(fnEquals).space().node(node.invExpression)
-        }).//
-        conditional(node.eqRelation != null, {
-            it.nl().token(eq).space().node(node.eqRelation)
-        }).//
-        conditional(node.ordRelation != null, {
-            it.nl().token(ord).space().node(node.ordRelation)
-        }).render
+        builder(context)
+            .conditional(node.access != null, {
+                it.node(node.access)
+            })
+            .token(node.name.name).space()
+            .conditional(node.type is ARecordInvariantType, {
+                it.token(record)
+            }, {
+                it.token(equals)
+            })
+            .space().setTypeDef().node(node.type).unsetTypeDef()
+            .conditional(node.invPattern != null, {
+                it.nl().token(inv).space().node(node.invPattern).space().token(fnEquals).space()
+                    .node(node.invExpression)
+            })
+            .conditional(node.eqRelation != null, {
+                it.nl().token(eq).space().node(node.eqRelation)
+            })
+            .conditional(node.ordRelation != null, {
+                it.nl().token(ord).space().node(node.ordRelation)
+            }).render
 
     override fun caseAInheritedDefinition(node: AInheritedDefinition, context: IRenderContext) =
         unhandled(node.javaClass, context)
@@ -834,19 +837,19 @@ class VdmPrettyPrinter(
             } else {
                 { builder ->
                     builder.nl().token(section).conditional(clazz != AAllImport::class.java, {
-                        it.incIndent().nl(). //
-                        nodeList(signatures, listOf(newLine)).decIndent()
+                        it.incIndent().nl()
+                            .nodeList(signatures, listOf(newLine)).decIndent()
                     })
                 }
             }
         }
-        return builder(context).token(from).space().node(node.name).incIndent(). //
-        apply(processSignatures(all, AAllImport::class.java)). //
-        apply(processSignatures(importFunctions, AFunctionValueImport::class.java)). //
-        apply(processSignatures(importOperations, AOperationValueImport::class.java)). //
-        apply(processSignatures(importValues, AValueValueImport::class.java)). //
-        apply(processSignatures(importTypes, ATypeImport::class.java)). //
-        render
+        return builder(context).token(from).space().node(node.name).incIndent()
+            .apply(processSignatures(all, AAllImport::class.java))
+            .apply(processSignatures(importFunctions, AFunctionValueImport::class.java))
+            .apply(processSignatures(importOperations, AOperationValueImport::class.java))
+            .apply(processSignatures(importValues, AValueValueImport::class.java))
+            .apply(processSignatures(importTypes, ATypeImport::class.java))
+            .render
     }
 
 
@@ -894,21 +897,21 @@ class VdmPrettyPrinter(
         }).space().node(node.result).render
 
     override fun caseAAccessSpecifierAccessSpecifier(node: AAccessSpecifierAccessSpecifier, context: IRenderContext) =
-        builder(context). //
-        conditional(node.access != null && node.access !is APrivateAccess, {
-            it.node(node.access).space()
-        }). //
+        builder(context)
+            .conditional(node.access != null && node.access !is APrivateAccess, {
+                it.node(node.access).space()
+            })
             // static should be printed for modules, but not classes
-        conditional(node.static != null && context.containerType == ContainerType.vdmClass, {
-            it.node(node.static).space()
-        }). //
-        conditional(node.async != null, {
-            it.node(node.async).space()
-        }). //
-        conditional(node.pure == true, {
-            it.token(pure).space()
-        }). //
-        render
+            .conditional(node.static != null && context.containerType == ContainerType.vdmClass, {
+                it.node(node.static).space()
+            })
+            .conditional(node.async != null, {
+                it.node(node.async).space()
+            })
+            .conditional(node.pure == true, {
+                it.token(pure).space()
+            })
+            .render
 
     override fun caseAConcurrentExpressionTraceCoreDefinition(
         node: AConcurrentExpressionTraceCoreDefinition,
@@ -989,16 +992,17 @@ class VdmPrettyPrinter(
         renderClass(node, NavigationMarker.cpu, context)
 
     override fun caseAStateDefinition(node: AStateDefinition, context: IRenderContext) =
-        builder(context).token(node.name.name).space().token(of).incIndent().nl(). //
-        nodeList(node.fields, listOf(newLine)).decIndent(). //
-        conditional(node.invPattern != null, {
-            it.nl().token(inv).space().node(node.invPattern).space().token(fnEquals).space().node(node.invExpression)
-        }). //
-        conditional(node.initPattern != null, {
-            it.nl().token(initToken).space().node(node.initPattern).space().token(fnEquals).space()
-                .node(node.initExpression)
-        }). //
-        nl().token(end).render
+        builder(context).token(node.name.name).space().token(of).incIndent().nl()
+            .nodeList(node.fields, listOf(newLine)).decIndent()
+            .conditional(node.invPattern != null, {
+                it.nl().token(inv).space().node(node.invPattern).space().token(fnEquals).space()
+                    .node(node.invExpression)
+            })
+            .conditional(node.initPattern != null, {
+                it.nl().token(initToken).space().node(node.initPattern).space().token(fnEquals).space()
+                    .node(node.initExpression)
+            })
+            .nl().token(end).render
 
     override fun defaultPExports(node: PExports, context: IRenderContext) = unhandled(node.javaClass, context)
 
@@ -1023,23 +1027,23 @@ class VdmPrettyPrinter(
     override fun caseILexToken(node: ILexToken, context: IRenderContext) = renderToken(node.type.toString(), context)
 
     override fun caseADefExp(node: ADefExp, context: IRenderContext) =
-        builder(context). //
-        conditional(context.lineState == LineState.tokened, {
-            it.nl().incIndent()
-        }). //
-        token(def).nl().incIndent(). //
-        nodeList(node.localDefs, listOf(semiColon, newLine)).nl(). //
-        decIndent().token(inToken).nl().incIndent(). //
-        node(node.expression).render
+        builder(context)
+            .conditional(context.lineState == LineState.tokened, {
+                it.nl().incIndent()
+            })
+            .token(def).nl().incIndent()
+            .nodeList(node.localDefs, listOf(semiColon, newLine)).nl()
+            .decIndent().token(inToken).nl().incIndent()
+            .node(node.expression).render
 
     override fun defaultPModules(node: PModules, context: IRenderContext) = unhandled(node.javaClass, context)
 
     override fun caseASetCompSetExp(node: ASetCompSetExp, context: IRenderContext) =
-        builder(context).token(lbrace).node(node.first).space().token(pipe).space().nodeList(node.bindings). //
-        conditional(node.predicate != null, {
-            it.space().token(bullet).space().node(node.predicate)
-        }). //
-        token(rbrace).render
+        builder(context).token(lbrace).node(node.first).space().token(pipe).space().nodeList(node.bindings)
+            .conditional(node.predicate != null, {
+                it.space().token(bullet).space().node(node.predicate)
+            })
+            .token(rbrace).render
 
     override fun caseANilPattern(node: ANilPattern, context: IRenderContext) = renderToken(nil, context)
 
@@ -1069,45 +1073,45 @@ class VdmPrettyPrinter(
 
     override fun caseAForIndexStm(node: AForIndexStm, context: IRenderContext) =
         builder(context).token(forToken).space().node(node.`var`).space().token(equals).space().node(node.from).space()
-            .token(toToken).space().node(node.to). //
-        conditional(node.by != null, {
-            it.space().token(by).space()
-        }).nl(). //
-        token(doToken).space().node(node.statement).render
+            .token(toToken).space().node(node.to)
+            .conditional(node.by != null, {
+                it.space().token(by).space()
+            }).nl()
+            .token(doToken).space().node(node.statement).render
 
     override fun caseAIfStm(node: AIfStm, context: IRenderContext) =
-        builder(context). //
-        conditional(context.lineState == LineState.tokened, {
-            it.nl().incIndent()
-        }). //
-        token(ifToken).space().node(node.ifExp).nl(). //
-        token(then).space().node(node.thenStm). //
-        conditional(node.elseIf != null && node.elseIf.isNotEmpty(), {
-            it.nl().nodeList(node.elseIf, listOf(newLine))
-        }). //
-        conditional(node.elseStm != null, {
-            it.nl().token(elseToken).space().node(node.elseStm)
-        }). //
-        render
+        builder(context)
+            .conditional(context.lineState == LineState.tokened, {
+                it.nl().incIndent()
+            })
+            .token(ifToken).space().node(node.ifExp).nl()
+            .token(then).space().node(node.thenStm)
+            .conditional(node.elseIf != null && node.elseIf.isNotEmpty(), {
+                it.nl().nodeList(node.elseIf, listOf(newLine))
+            })
+            .conditional(node.elseStm != null, {
+                it.nl().token(elseToken).space().node(node.elseStm)
+            })
+            .render
 
 
     override fun caseAIdentifierStateDesignator(node: AIdentifierStateDesignator, context: IRenderContext) =
         builder(context).node(node.name).render
 
     override fun caseAIfExp(node: AIfExp, context: IRenderContext) =
-        builder(context). //
-        conditional(context.lineState == LineState.tokened, {
-            it.nl().incIndent()
-        }). //
-        token(ifToken).space().node(node.test).nl(). //
-        token(then).space().node(node.then). //
-        conditional(node.elseList != null && node.elseList.isNotEmpty(), {
-            it.nl().nodeList(node.elseList, listOf(newLine))
-        }). //
-        conditional(node.`else` != null, {
-            it.nl().token(elseToken).space().node(node.`else`)
-        }). //
-        render
+        builder(context)
+            .conditional(context.lineState == LineState.tokened, {
+                it.nl().incIndent()
+            })
+            .token(ifToken).space().node(node.test).nl()
+            .token(then).space().node(node.then)
+            .conditional(node.elseList != null && node.elseList.isNotEmpty(), {
+                it.nl().nodeList(node.elseList, listOf(newLine))
+            })
+            .conditional(node.`else` != null, {
+                it.nl().token(elseToken).space().node(node.`else`)
+            })
+            .render
 
     override fun caseAStringPattern(node: AStringPattern, context: IRenderContext) =
         builder(context).token(doubleQuote).token(node.value.value).token(doubleQuote).render
@@ -1164,8 +1168,8 @@ class VdmPrettyPrinter(
     override fun defaultPAccess(node: PAccess, context: IRenderContext) = unhandled(node.javaClass, context)
 
     override fun caseAWhileStm(node: AWhileStm, context: IRenderContext) =
-        builder(context).token(whileToken).space().node(node.exp).nl(). //
-        token(doToken).space().node(node.statement).render
+        builder(context).token(whileToken).space().node(node.exp).nl()
+            .token(doToken).space().node(node.statement).render
 
     override fun defaultPExport(node: PExport, context: IRenderContext) = unhandled(node.javaClass, context)
 
@@ -1188,9 +1192,9 @@ class VdmPrettyPrinter(
         builder(context).node(node.left).space().token(concat).space().node(node.right).render
 
     override fun caseAFieldExp(node: AFieldExp, context: IRenderContext) =
-        builder(context). //
-        childExpression(node.`object`, node, RenderBuilder.Position.left). //
-        token(dot).node(node.field).render
+        builder(context)
+            .childExpression(node.`object`, node, RenderBuilder.Position.left)
+            .token(dot).node(node.field).render
 
     override fun caseAEqRelation(node: AEqRelation, context: IRenderContext) =
         builder(context).node(node.lhsPattern).space().token(equals).space().node(node.rhsPattern).space()
@@ -1247,17 +1251,17 @@ class VdmPrettyPrinter(
         unhandled(node.javaClass, context)
 
     override fun caseAEqualsDefinition(node: AEqualsDefinition, context: IRenderContext) =
-        builder(context). //
-        conditional(node.pattern == null, {
-            it.conditional(node.typebind == null, {
-                it.node(node.setbind)
+        builder(context)
+            .conditional(node.pattern == null, {
+                it.conditional(node.typebind == null, {
+                    it.node(node.setbind)
+                }, {
+                    it.node(node.typebind)
+                })
             }, {
-                it.node(node.typebind)
+                it.node(node.pattern)
             })
-        }, {
-            it.node(node.pattern)
-        }). //
-        space().token(equals).space().node(node.test).render
+            .space().token(equals).space().node(node.test).render
 
     override fun defaultPAlternativeStm(node: PAlternativeStm, context: IRenderContext) =
         unhandled(node.javaClass, context)
@@ -1272,11 +1276,11 @@ class VdmPrettyPrinter(
         }).render
 
     override fun caseALetBeStBindingTraceDefinition(node: ALetBeStBindingTraceDefinition, context: IRenderContext) =
-        builder(context).nl().incIndent().token(let).nl().incIndent().//
-        node(node.bind).nl(). //
-        decIndent().token(inToken).nl().incIndent(). //
-        node(node.body).decIndent().decIndent(). //
-        render
+        builder(context).nl().incIndent().token(let).nl().incIndent()
+            .node(node.bind).nl()
+            .decIndent().token(inToken).nl().incIndent()
+            .node(node.body).decIndent().decIndent()
+            .render
 
     override fun caseILexLocation(node: ILexLocation, context: IRenderContext) = unhandled(node.javaClass, context)
 
@@ -1299,26 +1303,26 @@ class VdmPrettyPrinter(
     override fun defaultPPair(node: PPair, context: IRenderContext) = unhandled(node.javaClass, context)
 
     override fun caseAImplicitOperationDefinition(node: AImplicitOperationDefinition, context: IRenderContext) =
-        builder(context). //
-        conditional(node.access != null, {
-            it.node(node.access)
-        }). //
-        token(node.name.name).lparens().nodeList(node.parameterPatterns).rparens(). //
-        conditional(node.result != null, {
-            it.space().node(node.result)
-        }). //
-        conditional(node.externals.isNotEmpty(), {
-            it.nl().token(ext).incIndent().nl().nodeList(node.externals, listOf(newLine)).decIndent()
-        }). //
-        conditional(node.precondition != null, {
-            it.nl().token(pre).space().node(node.precondition)
-        }). //
-        conditional(node.postcondition != null, {
-            it.nl().token(post).space().node(node.postcondition)
-        }). //
-        conditional(node.errors.isNotEmpty(), {
-            it.nl().token(errs).incIndent().nl().nodeList(node.errors, listOf(newLine)).decIndent()
-        }).render
+        builder(context)
+            .conditional(node.access != null, {
+                it.node(node.access)
+            })
+            .token(node.name.name).lparens().nodeList(node.parameterPatterns).rparens()
+            .conditional(node.result != null, {
+                it.space().node(node.result)
+            })
+            .conditional(node.externals.isNotEmpty(), {
+                it.nl().token(ext).incIndent().nl().nodeList(node.externals, listOf(newLine)).decIndent()
+            })
+            .conditional(node.precondition != null, {
+                it.nl().token(pre).space().node(node.precondition)
+            })
+            .conditional(node.postcondition != null, {
+                it.nl().token(post).space().node(node.postcondition)
+            })
+            .conditional(node.errors.isNotEmpty(), {
+                it.nl().token(errs).incIndent().nl().nodeList(node.errors, listOf(newLine)).decIndent()
+            }).render
 
     override fun caseADivNumericBinaryExp(node: ADivNumericBinaryExp, context: IRenderContext) =
         renderSBinaryExp(node, context)
@@ -1346,19 +1350,19 @@ class VdmPrettyPrinter(
             } else {
                 { builder ->
                     builder.token(section).conditional(clazz != AAllExport::class.java, {
-                        it.incIndent().nl(). //
-                        nodeList(exports, listOf(newLine)).decIndent().nl()
+                        it.incIndent().nl()
+                            .nodeList(exports, listOf(newLine)).decIndent().nl()
                     })
                 }
             }
         }
-        return builder(context).incIndent(). //
-        apply(processExports(all, AAllExport::class.java)). //
-        apply(processExports(importFunctions, AFunctionExport::class.java)). //
-        apply(processExports(importOperations, AOperationExport::class.java)). //
-        apply(processExports(importValues, AValueExport::class.java)). //
-        apply(processExports(importTypes, ATypeExport::class.java)). //
-        decIndent().render
+        return builder(context).incIndent()
+            .apply(processExports(all, AAllExport::class.java))
+            .apply(processExports(importFunctions, AFunctionExport::class.java))
+            .apply(processExports(importOperations, AOperationExport::class.java))
+            .apply(processExports(importValues, AValueExport::class.java))
+            .apply(processExports(importTypes, ATypeExport::class.java))
+            .decIndent().render
     }
 
 
@@ -1385,13 +1389,13 @@ class VdmPrettyPrinter(
     override fun caseACasesStm(node: ACasesStm, context: IRenderContext) =
         builder(context).conditional(context.lineState == LineState.tokened, {
             it.nl().incIndent()
-        }). //
-        token(cases).space().node(node.exp).token(colon).nl().incIndent().//
-        nodeList(node.cases, listOf(comma, newLine)). //
-        conditional(node.others != null, {
-            it.token(comma).nl().token(others).space().token(partialFunction).space().node(node.others)
-        }).nl().decIndent(). //
-        token(end).render
+        })
+            .token(cases).space().node(node.exp).token(colon).nl().incIndent()
+            .nodeList(node.cases, listOf(comma, newLine))
+            .conditional(node.others != null, {
+                it.token(comma).nl().token(others).space().token(partialFunction).space().node(node.others)
+            }).nl().decIndent()
+            .token(end).render
 
     override fun caseALenUnaryExp(node: ALenUnaryExp, context: IRenderContext) =
         renderSUnaryExp(node, len, context)
@@ -1414,15 +1418,15 @@ class VdmPrettyPrinter(
     override fun defaultPPattern(node: PPattern, context: IRenderContext) = unhandled(node.javaClass, context)
 
     override fun caseACaseAlternativeStm(node: ACaseAlternativeStm, context: IRenderContext) =
-        builder(context). //
-        conditional(node.pattern is AExpressionPattern, {
-            it.lparens()
-        }). //
-        node(node.pattern). //
-        conditional(node.pattern is AExpressionPattern, {
-            it.rparens()
-        }). //
-        space().token(partialFunction).space().node(node.result).render
+        builder(context)
+            .conditional(node.pattern is AExpressionPattern, {
+                it.lparens()
+            })
+            .node(node.pattern)
+            .conditional(node.pattern is AExpressionPattern, {
+                it.rparens()
+            })
+            .space().token(partialFunction).space().node(node.result).render
 
     override fun caseAPerSyncDefinition(node: APerSyncDefinition, context: IRenderContext) =
         builder(context).token(per).space().node(node.opname).space().token(implies).space().node(node.guard).render
@@ -1453,14 +1457,14 @@ class VdmPrettyPrinter(
 
         fun processDefsOfType(section: NavigationMarker, defs: List<PDefinition>): (RenderBuilder) -> RenderBuilder {
             return { builder ->
-                builder.token(section.token as RenderToken).addNavigationMarks(section).nl().vspace().incIndent(). //
-                nodeList(defs, listOf(semiColon, newLine, newLine), { node ->
-                    if (node is PDefinitionBase && node.name != null) {
-                        NavigationMarker(node.name.simpleName)
-                    } else {
-                        null
-                    }
-                }).nl().vspace().decIndent()
+                builder.token(section.token as RenderToken).addNavigationMarks(section).nl().vspace().incIndent()
+                    .nodeList(defs, listOf(semiColon, newLine, newLine), { node ->
+                        if (node is PDefinitionBase && node.name != null) {
+                            NavigationMarker(node.name.simpleName)
+                        } else {
+                            null
+                        }
+                    }).nl().vspace().decIndent()
             }
         }
 
@@ -1486,14 +1490,14 @@ class VdmPrettyPrinter(
                 { b: RenderBuilder -> b.apply(processDefsOfType(def.first, def.second)) }
             }
 
-        return builder(context).setCurrentContainer(node).//
-        token(classNavMarker.token as RenderToken).space().token(node.name.name). //
-        conditional(node.supertypes.isNotEmpty(), {
-            it.space().token(isSubclassOf).space().nodeList(node.supertypes)
-        }).addNavigationMarks(classNavMarker).nl().vspace(). //
-        applyAll(processDefs()).nl(). //
-        token(end).space().token(node.name.name). //
-        render
+        return builder(context).setCurrentContainer(node)
+            .token(classNavMarker.token as RenderToken).space().token(node.name.name)
+            .conditional(node.supertypes.isNotEmpty(), {
+                it.space().token(isSubclassOf).space().nodeList(node.supertypes)
+            }).addNavigationMarks(classNavMarker).nl().vspace()
+            .applyAll(processDefs()).nl()
+            .token(end).space().token(node.name.name)
+            .render
     }
 
     override fun caseADomainResByBinaryExp(node: ADomainResByBinaryExp, context: IRenderContext) =
@@ -1513,19 +1517,19 @@ class VdmPrettyPrinter(
         renderSBinaryExp(node, context)
 
     override fun caseALetDefBindingTraceDefinition(node: ALetDefBindingTraceDefinition, context: IRenderContext) =
-        builder(context).nl().incIndent().token(let).nl().incIndent().//
-        nodeList(node.localDefs, listOf(comma, newLine)).nl(). //
-        decIndent().token(inToken).nl().incIndent(). //
-        node(node.body).decIndent().decIndent(). //
-        render
+        builder(context).nl().incIndent().token(let).nl().incIndent()
+            .nodeList(node.localDefs, listOf(comma, newLine)).nl()
+            .decIndent().token(inToken).nl().incIndent()
+            .node(node.body).decIndent().decIndent()
+            .render
 
     override fun caseAApplyObjectDesignator(node: AApplyObjectDesignator, context: IRenderContext) =
         builder(context).node(node.`object`).lparens().nodeList(node.args).rparens().render
 
     override fun caseAApplyExp(node: AApplyExp, context: IRenderContext) =
-        builder(context).//
-        childExpression(node.root, node, RenderBuilder.Position.left). //
-        lparens().nodeList(node.args).rparens().render
+        builder(context)
+            .childExpression(node.root, node, RenderBuilder.Position.left)
+            .lparens().nodeList(node.args).rparens().render
 
     override fun caseAMapInverseUnaryExp(node: AMapInverseUnaryExp, context: IRenderContext) =
         renderLeftRightSUnaryExp(node, inverseLeft, inverseRight, context)
@@ -1552,32 +1556,33 @@ class VdmPrettyPrinter(
         renderSUnaryExp(node, dinter, context)
 
     override fun caseAExplicitOperationDefinition(node: AExplicitOperationDefinition, context: IRenderContext) =
-        builder(context). //
-        conditional(node.access != null, {
-            it.node(node.access)
-        }). //
-        token(node.name.name).token(colon).space().node(node.type).nl().//
-        token(node.name.name).lparens().nodeList(node.parameterPatterns).rparens().space().token(fnEquals).incIndent()
-            .nl(). //
-        node(node.body).decIndent(). //
-        conditional(node.precondition != null, {
-            it.nl().token(pre).space().node(node.precondition)
-        }). //
-        conditional(node.postcondition != null, {
-            it.nl().token(post).space().node(node.postcondition)
-        }).render
+        builder(context)
+            .conditional(node.access != null, {
+                it.node(node.access)
+            })
+            .token(node.name.name).token(colon).space().node(node.type).nl()
+            .token(node.name.name).lparens().nodeList(node.parameterPatterns).rparens().space().token(fnEquals)
+            .incIndent()
+            .nl()
+            .node(node.body).decIndent()
+            .conditional(node.precondition != null, {
+                it.nl().token(pre).space().node(node.precondition)
+            })
+            .conditional(node.postcondition != null, {
+                it.nl().token(post).space().node(node.postcondition)
+            }).render
 
     override fun caseASelfExp(node: ASelfExp, context: IRenderContext) = renderToken(self, context)
 
     override fun caseAInstanceVariableDefinition(node: AInstanceVariableDefinition, context: IRenderContext) =
-        builder(context). //
-        conditional(node.access != null, {
-            it.node(node.access)
-        }). //
-        node(node.name).token(colon).space().node(node.type). //
-        conditional(node.expression !is AUndefinedExp, {
-            it.space().token(assign).space().node(node.expression)
-        }).render
+        builder(context)
+            .conditional(node.access != null, {
+                it.node(node.access)
+            })
+            .node(node.name).token(colon).space().node(node.type)
+            .conditional(node.expression !is AUndefinedExp, {
+                it.space().token(assign).space().node(node.expression)
+            }).render
 
     override fun defaultPCase(node: PCase, context: IRenderContext) = unhandled(node.javaClass, context)
 
@@ -1595,24 +1600,24 @@ class VdmPrettyPrinter(
     override fun defaultPRelation(node: PRelation, context: IRenderContext) = unhandled(node.javaClass, context)
 
     override fun caseACasesExp(node: ACasesExp, context: IRenderContext) =
-        builder(context). //
-        conditional(context.lineState == LineState.tokened, {
-            it.nl().incIndent()
-        }). //
-        token(cases).space().node(node.expression).token(colon).nl().incIndent().//
-        nodeList(node.cases, listOf(comma, newLine)). //
-        conditional(node.others != null, {
-            it.token(comma).nl().token(others).space().token(partialFunction).space().node(node.others)
-        }).nl().decIndent(). //
-        token(end).render
+        builder(context)
+            .conditional(context.lineState == LineState.tokened, {
+                it.nl().incIndent()
+            })
+            .token(cases).space().node(node.expression).token(colon).nl().incIndent()
+            .nodeList(node.cases, listOf(comma, newLine))
+            .conditional(node.others != null, {
+                it.token(comma).nl().token(others).space().token(partialFunction).space().node(node.others)
+            }).nl().decIndent()
+            .token(end).render
 
     override fun caseABracketedExpressionTraceCoreDefinition(
         node: ABracketedExpressionTraceCoreDefinition,
         context: IRenderContext
     ) =
-        builder(context).lparens().incIndent().nl(). //
-        nodeList(node.terms, listOf(semiColon, newLine)).decIndent().nl(). //
-        rparens().render
+        builder(context).lparens().incIndent().nl()
+            .nodeList(node.terms, listOf(semiColon, newLine)).decIndent().nl()
+            .rparens().render
 
     override fun caseANotYetSpecifiedStm(node: ANotYetSpecifiedStm, context: IRenderContext) =
         renderToken(isNotYetSpecified, context)
@@ -1624,13 +1629,13 @@ class VdmPrettyPrinter(
         renderSBinaryExp(node, context)
 
     override fun caseACallObjectStm(node: ACallObjectStm, context: IRenderContext) =
-        builder(context).node(node.designator).token(dot). //
-        conditional(node.classname == null, {
-            it.node(node.fieldname)
-        }, {
-            it.node(node.classname)
-        }). //
-        lparens().nodeList(node.args).rparens().render
+        builder(context).node(node.designator).token(dot)
+            .conditional(node.classname == null, {
+                it.node(node.fieldname)
+            }, {
+                it.node(node.classname)
+            })
+            .lparens().nodeList(node.args).rparens().render
 
     override fun caseAPublicAccess(node: APublicAccess, context: IRenderContext) = renderToken(publicToken, context)
 
@@ -1656,36 +1661,36 @@ class VdmPrettyPrinter(
         }).token(colon).space().node(node.exportType).render
 
     override fun caseALetBeStExp(node: ALetBeStExp, context: IRenderContext) =
-        builder(context). //
-        conditional(context.lineState == LineState.tokened, {
-            it.nl().incIndent()
-        }). //
-        token(let).space().node(node.bind). //
-        conditional(node.suchThat != null, {
-            it.space().token(be).space().token(st).nl().incIndent().node(node.suchThat).decIndent()
-        }). //
-        nl().token(inToken).space().node(node.value).render
+        builder(context)
+            .conditional(context.lineState == LineState.tokened, {
+                it.nl().incIndent()
+            })
+            .token(let).space().node(node.bind)
+            .conditional(node.suchThat != null, {
+                it.space().token(be).space().token(st).nl().incIndent().node(node.suchThat).decIndent()
+            })
+            .nl().token(inToken).space().node(node.value).render
 
     override fun caseACaseAlternative(node: ACaseAlternative, context: IRenderContext) =
         builder(context).conditional(node.pattern is AExpressionPattern, {
             it.lparens()
-        }). //
-        node(node.pattern). //
-        conditional(node.pattern is AExpressionPattern, {
-            it.rparens()
-        }). //
-        space().token(partialFunction).space().node(node.result).render
+        })
+            .node(node.pattern)
+            .conditional(node.pattern is AExpressionPattern, {
+                it.rparens()
+            })
+            .space().token(partialFunction).space().node(node.result).render
 
     override fun caseAFieldField(node: AFieldField, context: IRenderContext) =
-        builder(context). //
+        builder(context)
             // TODO - is there a better way to determine if this is anonymous?
-        conditional(node.tag.toIntOrNull() == null, {
-            it.node(node.tagname).space().conditional(node.equalityAbstraction, {
-                it.token(abstraction)
-            }, {
-                it.token(colon)
-            }).space()
-        }).node(node.type).render
+            .conditional(node.tag.toIntOrNull() == null, {
+                it.node(node.tagname).space().conditional(node.equalityAbstraction, {
+                    it.token(abstraction)
+                }, {
+                    it.token(colon)
+                }).space()
+            }).node(node.type).render
 
     override fun caseASeqMultipleBind(node: ASeqMultipleBind, context: IRenderContext) =
         builder(context).nodeList(node.plist).space().token(inSeq).space().node(node.seq).render

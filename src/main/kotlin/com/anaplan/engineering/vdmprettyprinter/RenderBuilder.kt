@@ -222,20 +222,20 @@ internal class RenderBuilder(
     internal fun childExpression(child: PExp, parent: PExp, position: Position) =
         conditional(expRequiresParentheses(child, parent, position == Position.right), {
             it.lparens()
-        }). //
-        node(child). //
-        conditional(expRequiresParentheses(child, parent, position == Position.right), {
-            it.rparens()
         })
+            .node(child)
+            .conditional(expRequiresParentheses(child, parent, position == Position.right), {
+                it.rparens()
+            })
 
     internal fun childType(child: PType, parent: PType) =
         conditional(typeRequiresParentheses(child, parent), {
             it.lparens()
-        }). //
-        node(child). //
-        conditional(typeRequiresParentheses(child, parent), {
-            it.rparens()
         })
+            .node(child)
+            .conditional(typeRequiresParentheses(child, parent), {
+                it.rparens()
+            })
 
     private class MutableRenderBuilder(
         val renderBuilder: RenderBuilder,
