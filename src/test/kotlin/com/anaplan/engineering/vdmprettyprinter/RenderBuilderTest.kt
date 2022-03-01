@@ -24,9 +24,9 @@ package com.anaplan.engineering.vdmprettyprinter
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
-import junit.framework.TestCase.assertEquals
-import org.junit.Test
 import org.overture.ast.node.INode
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class RenderBuilderTest {
 

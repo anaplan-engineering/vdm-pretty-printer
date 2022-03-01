@@ -21,13 +21,13 @@
  */
 package com.anaplan.engineering.vdmprettyprinter
 
-import junit.framework.TestCase
-import org.junit.Ignore
-import org.junit.Test
+import kotlin.test.Ignore
+import kotlin.test.Test
 import org.overture.ast.definitions.AValueDefinition
 import org.overture.interpreter.VDMSL
 import org.overture.interpreter.util.ExitStatus
 import java.nio.file.Files
+import kotlin.test.assertEquals
 
 class OperatorPrecedenceTest {
 
@@ -197,12 +197,12 @@ class OperatorPrecedenceTest {
         tempFile.writeText("values\na = $raw")
         val vdmsl = VDMSL()
         val parseResult = vdmsl.parse(listOf(tempFile))
-        TestCase.assertEquals("Unable to parse $raw", ExitStatus.EXIT_OK, parseResult)
+        assertEquals(ExitStatus.EXIT_OK, parseResult, "Unable to parse $raw")
         val typeCheckResult = vdmsl.typeCheck()
-        TestCase.assertEquals("Unable to type check $raw", ExitStatus.EXIT_OK, typeCheckResult)
+        assertEquals(ExitStatus.EXIT_OK, typeCheckResult, "Unable to type check $raw")
         val module = vdmsl.interpreter.defaultModule
         val valueDefinition = module.defs.filter { it is AValueDefinition }.map { it as AValueDefinition }.first()
         val actual = VdmPrettyPrinter().prettyPrint(valueDefinition.expression, config = PrettyPrintConfig(includeHeaderFooter = false))
-        TestCase.assertEquals(expected, actual)
+        assertEquals(expected, actual)
     }
 }

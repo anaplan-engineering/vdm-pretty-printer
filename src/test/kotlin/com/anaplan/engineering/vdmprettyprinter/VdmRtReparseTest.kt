@@ -21,7 +21,7 @@
  */
 package com.anaplan.engineering.vdmprettyprinter
 
-import org.junit.Test
+import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import org.overture.interpreter.VDMRT

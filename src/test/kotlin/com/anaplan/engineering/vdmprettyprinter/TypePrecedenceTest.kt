@@ -21,8 +21,8 @@
  */
 package com.anaplan.engineering.vdmprettyprinter
 
-import junit.framework.TestCase.assertEquals
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.Test
 import org.overture.ast.definitions.ATypeDefinition
 import org.overture.ast.types.ANamedInvariantType
 import org.overture.interpreter.VDMSL

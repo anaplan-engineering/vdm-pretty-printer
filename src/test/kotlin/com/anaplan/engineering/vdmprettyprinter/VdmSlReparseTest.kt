@@ -21,9 +21,9 @@
  */
 package com.anaplan.engineering.vdmprettyprinter
 
-import junit.framework.TestCase.assertEquals
+import kotlin.test.assertEquals
 import org.junit.Assume
-import org.junit.Test
+import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import org.overture.interpreter.VDMJ

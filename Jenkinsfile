@@ -3,7 +3,7 @@ import com.anaplan.buildtools.jenkins_pipelines.DefaultConfig
 
 @Library('Anaplan_Pipeline')
 
-def BUILD_LABEL = "azuki.${UUID.randomUUID().toString()}"
+def BUILD_LABEL = "vdm-pretty-printer.${UUID.randomUUID().toString()}"
 
 pipeline {
     agent {
@@ -43,7 +43,7 @@ pipeline {
 
         stage('Publish') {
             when {
-                expression { 
+                expression {
                     params.version?.trim()
                 }
             }
