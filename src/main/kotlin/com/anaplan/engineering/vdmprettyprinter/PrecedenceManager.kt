@@ -169,14 +169,12 @@ object PrecedenceManager {
     private val tokenPrecedence = Precedence(0, OperatorGrouping.none)
 
     private fun getPrecedence(exp: PExp) =
-        if (exp is SBinaryExp) {
-            binaryExpPrecedence[exp.op.toString()]
-                ?: throw IllegalStateException("Missing precedence level for binary operator ${exp.op}")
-        } else if (exp is SUnaryExp) {
-            unaryExpPrecedence[exp::class]
-                ?: throw IllegalStateException("Missing precedence level for unary operator ${exp::class}")
-        } else {
-            explicitExpressionPrecedence[exp::class] ?: tokenPrecedence
+        when (exp) {
+            is SBinaryExp -> binaryExpPrecedence[exp.op.toString()]
+                ?: throw IllegalStateException("Missing precedence level for binary operator ${exp.op} ${exp.location}")
+            is SUnaryExp -> unaryExpPrecedence[exp::class]
+                ?: throw IllegalStateException("Missing precedence level for unary operator ${exp::class} ${exp.location}")
+            else -> explicitExpressionPrecedence[exp::class] ?: tokenPrecedence
         }
 
     internal fun expRequiresParentheses(child: PExp, parent: PExp, childRight: Boolean): Boolean {
