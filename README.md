@@ -2,15 +2,15 @@
 
 This project provides a mechanism to produce a pretty-printed representation of a VDM AST.
 
-The pretty printer works directly from the AST to produce a rendering according to a specified strategy. A number of default [rendering strategies](#rendering-strategies) are provided with the tool. 
+The pretty printer works directly from the AST to produce a rendering according to a specified strategy. A number of default [rendering strategies](#rendering-strategies) are provided with the tool.
 
 ## Status
 The principal motivation for creating this pretty printer was to produce HTML renderings of VDM-SL specifications. Thus, the focus of our work so far has been supporting VDM-SL and rendering to HTML. However, testing shows that the component is able to successfully process many VDM++ examples (more work is required on VDM-RT). Similarly, a number of [rendering strategies](#rendering-strategies) are provided, but the HTML renderer has been most tested.
- 
-We believe that this tool will provide useful to most VDM practitioners, but there is still some work required to guarantee the renderings produced (see [Known issues](#known-issues)). We are continuing to work on improving the range of language supported and the range and quality of the renderings (e.g. more intelligent line splitting). 
+
+We believe that this tool will provide useful to most VDM practitioners, but there is still some work required to guarantee the renderings produced (see [Known issues](#known-issues)). We are continuing to work on improving the range of language supported and the range and quality of the renderings (e.g. more intelligent line splitting).
 
 ## Version
-This page was last updated, to correctly describe the use and behaviour of version **2.6.4** of the pretty printer.
+This page was last updated, to correctly describe the use and behaviour of version **3.0.2** of the pretty printer.
 
 Version numbers are currently tied to the version of Overture that the pretty printer is compiled against.
 
@@ -59,13 +59,13 @@ val prettyPrinter = VdmPrettyPrinter(renderStrategy = MathematicalUnicodeHtmlRen
 ```
 
 The following render strategies are packaged with this project:
-- `PlainAsciiTextRenderStrategy` — intended to format a specification in place 
+- `PlainAsciiTextRenderStrategy` — intended to format a specification in place
 - `MathematicalUnicodeTextRenderStrategy` — uses mathematical symbols in favour of ASCII keywords where possible to produce a UTF-8 text representation.
 - `MathematicalUnicodeHtmlRenderStrategy` — as the previous, but produces a UTF-8 HTML representation
 
-Custom strategies can be created by implementing the `IRenderStrategy` interface.  
+Custom strategies can be created by implementing the `IRenderStrategy` interface.
 
-### Sample 
+### Sample
 Take, For example, the following snippet of VDM-SL:
 ```
 values
@@ -86,7 +86,7 @@ The MathematicalUnicodeHtmlRenderStrategy would produce this render:
 &nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;+&nbsp;1<br/>
 
 ## Testing
-The principal means of testing this pretty printer is through a series of tests that pretty print the example specifications that are provided with Overture and then re-parse and verify that the internal representation matches that of the original. 
+The principal means of testing this pretty printer is through a series of tests that pretty print the example specifications that are provided with Overture and then re-parse and verify that the internal representation matches that of the original.
 
 These tests are co-ordinated by the classes `VdmSlReparseTest`, `VdmPpReparseTest` and `VdmRtReparseTest` and the example specifications used are found in [src/test/resources](src/test/resources).
 
@@ -118,3 +118,7 @@ This causes the following test examples to fail. Each of these tests passes when
 - PacemakerConcPP
 - expressSL
 - MetroInterlockingPP
+
+### Ignores comments and annotations
+
+Currently the pretty printer does not process comments and annotations.
