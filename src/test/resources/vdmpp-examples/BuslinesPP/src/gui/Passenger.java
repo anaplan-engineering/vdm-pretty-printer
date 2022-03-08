@@ -2,37 +2,37 @@ package gui;
 
 public class Passenger {
 
-    int passId;
-    String goal;
-    private boolean annoyed;
-    private boolean isOnBus;
+	int passId;
+	String goal; 
+	private boolean annoyed;
+	private boolean isOnBus;
+	
+	public Passenger(int id, String headingFor){
+		passId = id;
+		goal = headingFor;
+	}
+	
+	public int Id() {
+		return passId;
+	}
 
-    public Passenger(int id, String headingFor) {
-        passId = id;
-        goal = headingFor;
-    }
+	void setAnnoyed(boolean annoyed) {
+		this.annoyed = annoyed;
+	}
 
-    public int Id() {
-        return passId;
-    }
+	boolean isAnnoyed() {
+		return annoyed;
+	}
 
-    void setAnnoyed(boolean annoyed) {
-        this.annoyed = annoyed;
-    }
+	public void gotOnBus() {
+		this.isOnBus = true;
+	}
 
-    boolean isAnnoyed() {
-        return annoyed;
-    }
-
-    public void gotOnBus() {
-        this.isOnBus = true;
-    }
-
-    public boolean isOnBus() {
-        return isOnBus;
-    }
-
-    public String headingFor() {
-        return goal;
-    }
+	public boolean isOnBus() {
+		return isOnBus;
+	}
+	
+	public String headingFor() {
+		return goal;
+	}
 }

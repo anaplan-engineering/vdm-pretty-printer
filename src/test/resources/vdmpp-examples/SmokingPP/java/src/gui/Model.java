@@ -5,47 +5,48 @@ import java.util.Observable;
 
 class Model extends Observable implements Serializable {
 
-
-    private static final long serialVersionUID = 1L;
-    private int smoking;
-
+    
+	private static final long serialVersionUID = 1L;
+	private int smoking; 
+	
     public Model() {
-        smoking = 0;
+    	smoking = 0;
     }
-
-    public void paperAdded() {
-        setChanged();
+    
+	public void paperAdded() {
+		setChanged();
         notifyObservers("paperAdded");
-    }
+	}
 
-    public void tobaccoAdded() {
-        setChanged();
+	public void tobaccoAdded() {
+		setChanged();
         notifyObservers("tobaccoAdded");
-    }
+	}
 
-    public void matchAdded() {
-        setChanged();
+	public void matchAdded() {
+		setChanged();
         notifyObservers("matchAdded");
-    }
-
-    public void tableCleared() {
-        setChanged();
+	}
+	
+	public void tableCleared()
+	{
+		setChanged();
         notifyObservers("tableCleared");
-    }
+	}
 
-    public void nowSmoking(long smoker) {
-
-        smoking = (int) smoker;
-        setChanged();
+	public void nowSmoking(long smoker) {
+		
+		smoking = (int) smoker;
+		setChanged();
         notifyObservers("smoking");
-    }
+	}
 
-    int getSmoker() {
-        return smoking;
-    }
+	int getSmoker() {
+		return smoking;
+	}
 
-    public void finishedSmoking() {
-        setChanged();
+	public void finishedSmoking() {
+		setChanged();
         notifyObservers("finishedSmoking");
-    }
+	}
 }

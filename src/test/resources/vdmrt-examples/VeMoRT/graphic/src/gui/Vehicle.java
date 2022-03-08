@@ -1,31 +1,39 @@
 package gui;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 
 public class Vehicle extends JLabel {
-    private static final long serialVersionUID = -3979905387344521236L;
-
-    AffineTransform at = new AffineTransform();
+	private static final long serialVersionUID = -3979905387344521236L;
+	
+	AffineTransform at = new AffineTransform();
     Point gridCenter = new Point();
-    Point position = new Point();
+    Point position =  new Point();
     int circleSize;
     Color carColor;
     int resolutionFactor;
     Long vecID;
     transient Image messagein;
     transient Image messageout;
-
+    
     boolean receivedData;
     int imageShownCounter;
-
+    
     public enum CarColor {
         Blue, Red, Black, Grey
     }
 
-    public Vehicle(long vehicleID, CarColor color) {
+    public Vehicle(long vehicleID,CarColor color) {
 
         vecID = vehicleID;
 
@@ -52,7 +60,7 @@ public class Vehicle extends JLabel {
                 car = new ImageIcon(getClass().getResource("/gui/resources/redcar.png"));
                 break;
         }
-
+        
         this.setIcon(car);
         messagein = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/gui/resources/messagein.png"));
     }
@@ -64,7 +72,7 @@ public class Vehicle extends JLabel {
         return vecID;
     }
 
-    /**
+        /**
      * @return the carColor
      */
     public Color getCarColor() {
@@ -89,34 +97,36 @@ public class Vehicle extends JLabel {
     }
 
     public void SetPosition(int x, int y) {
-
+    	
         position.x = gridCenter.x + x * resolutionFactor;
-        position.y = gridCenter.y - y * resolutionFactor;
-        this.setLocation(position.x, position.y);
+        position.y =  gridCenter.y - y * resolutionFactor;
+        this.setLocation(position.x  , position.y);
         repaint();
     }
 
-    /**
+     /**
      * @return the position converted to screen coordinates
      */
     public Point GetPosition() {
         return position;
     }
 
-    /**
+      /**
      * @return the range converted to screen coordinates
      */
-    public int GetRange() {
+    public int GetRange()
+    {
         return circleSize;
     }
-
-    public void SetReceivedData() {
-        receivedData = true;
-        imageShownCounter = 30;
+    
+    public void SetReceivedData()
+    {
+    	receivedData = true;
+    	imageShownCounter = 30;
     }
 
     public void GridSizeChanged() {
-
+    	
         Dimension dim = this.getParent().getSize();
         //set coordinate origin as center screen. -30 is to center car image
         gridCenter.setLocation(dim.getWidth() / 2 - 30, dim.getHeight() / 2 - 30);
@@ -129,25 +139,26 @@ public class Vehicle extends JLabel {
         //resolutionFactor = 10;
 
         circleSize = resolutionFactor * 2 * Model.VEHICLE_RANGE;
-
-        this.setLocation(position.x, position.y);
+        
+        this.setLocation(position.x  , position.y);
     }
 
     transient Graphics2D g2;
-
     @Override
     protected void paintComponent(Graphics g) {
 
         g2 = (Graphics2D) g;
         g2.transform(at);
         super.paintComponent(g);
-
-        if (receivedData) {
-            g2.drawImage(messagein, 0, 0, null);
-            imageShownCounter--;
-            if (imageShownCounter <= 0) {
-                receivedData = false;
-            }
+        
+        if(receivedData)
+        {
+        	g2.drawImage(messagein, 0, 0, null);
+        	imageShownCounter--;
+        	if(imageShownCounter <= 0)
+        	{
+        		receivedData = false;	
+        	}
         }
     }
 }

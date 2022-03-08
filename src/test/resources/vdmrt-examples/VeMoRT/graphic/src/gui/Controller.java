@@ -1,19 +1,18 @@
 package gui;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.*;
 import java.io.IOException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Controller extends JFrame {
+import javax.swing.*;
 
-    private static final long serialVersionUID = 1L;
-    JPanel buttonPanel = new JPanel();
+public class Controller extends JFrame  {
+ 
+	private static final long serialVersionUID = 1L;
+	JPanel buttonPanel = new JPanel();
 
     JButton toggleRangeButton = new JButton("Range");
     JButton toggleConnectionsButton = new JButton("Connections");
@@ -23,29 +22,29 @@ public class Controller extends JFrame {
 
     public Controller() {
         init();
-
-        setSize(1000, 800);
-        setVisible(true);
+        
+        setSize(1000,800);  
+        setVisible(true);  
     }
 
     public void init() {
-        model = new Model();
+      model = new Model();
         try {
             view = new View(getModel());
         } catch (IOException ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        layOutComponents();
-        attachListenersToComponents();
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // Connect model and view
-        model.addObserver(view);
-    }
+        
+      layOutComponents();
+      attachListenersToComponents();
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      // Connect model and view
+      model.addObserver(view);
+   }
 
     private void attachListenersToComponents() {
 
-
+          
         toggleRangeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getModel().toggleRange();
@@ -57,34 +56,34 @@ public class Controller extends JFrame {
                 getModel().toggleConnections();
             }
         });
-
+          
 
         //resize event
-        this.addComponentListener(new java.awt.event.ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                getModel().setLimits(view.getWidth(), view.getHeight());
-            }
-        });
-
-        // resizing event
-        getContentPane().addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                getModel().setLimits(view.getWidth(), view.getHeight());
-            }
-        });
+		this.addComponentListener(new java.awt.event.ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				getModel().setLimits(view.getWidth(), view.getHeight());
+			}
+		});
+          
+		// resizing event
+		getContentPane().addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				getModel().setLimits(view.getWidth(), view.getHeight());
+			}
+		});
     }
 
     private void layOutComponents() {
         setLayout(new BorderLayout());
-        this.add(BorderLayout.SOUTH, buttonPanel);
+          this.add(BorderLayout.SOUTH, buttonPanel);
+ 
+              buttonPanel.add(toggleRangeButton);
+              buttonPanel.add(toggleConnectionsButton);
 
-        buttonPanel.add(toggleRangeButton);
-        buttonPanel.add(toggleConnectionsButton);
-
-        this.add(BorderLayout.CENTER, view);
-
+          this.add(BorderLayout.CENTER, view);
+  
     }
 
     /**
