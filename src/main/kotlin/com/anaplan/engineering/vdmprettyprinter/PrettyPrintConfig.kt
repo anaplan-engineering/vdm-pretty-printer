@@ -21,19 +21,19 @@
  */
 package com.anaplan.engineering.vdmprettyprinter
 
-data class PrettyPrintConfig (
-        /**
-         * If true, log to the console if an unhandled node type is encountered
-         */
-        val logUnhandledCases: Boolean = false,
+data class PrettyPrintConfig(
+    /**
+     * If true, log to the console if an unhandled node type is encountered
+     */
+    val logUnhandledCases: Boolean = false,
 
-        /**
-         * When a node list is equal to or greater than this value each element will be displayed on a new line
-         */
-        val minListLengthToUseNls: Int = 5,
+    /**
+     * When a node list is equal to or greater than this value each element will be displayed on a new line
+     */
+    val minListLengthToUseNls: Int = 5,
 
-        /**
-         * If true will wrap rendering in any strategy-specific header and footer
-         */
-        val includeHeaderFooter: Boolean = true
+    /**
+     * If true will wrap rendering in any strategy-specific header and footer
+     */
+    val includeHeaderFooter: Boolean = true
 )

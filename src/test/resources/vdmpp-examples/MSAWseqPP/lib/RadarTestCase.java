@@ -1,7 +1,7 @@
 package dk.au.eng;
 
 import org.junit.Assert;
-import org.junit.Test;
+import kotlin.test.Test;
 
 public class RadarTestCase {
 

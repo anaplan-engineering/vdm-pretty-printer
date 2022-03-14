@@ -21,11 +21,11 @@
  */
 package com.anaplan.engineering.vdmprettyprinter
 
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import org.overture.interpreter.VDMRT
 import java.io.File
+import kotlin.test.Test
 
 /**
  * Flow of this test is to:
@@ -60,7 +60,11 @@ class VdmRtReparseTest(val exampleDir: String) {
         val firstParseResult = parseAndPrettyPrintVdmRt(inputDirectory)
         val secondParseResult = parseAndPrettyPrintVdmRt(firstParseResult.prettyPrintOutputDirectory)
         checkClasses(firstParseResult.classes, secondParseResult.classes)
-        checkRenderings(firstParseResult.prettyPrintOutputDirectory, secondParseResult.prettyPrintOutputDirectory, vdmRtFileExtension)
+        checkRenderings(
+            firstParseResult.prettyPrintOutputDirectory,
+            secondParseResult.prettyPrintOutputDirectory,
+            vdmRtFileExtension
+        )
     }
 
     private fun parseAndPrettyPrintVdmRt(inputDirectory: File): ClassParseAndPrettyPrintResult {

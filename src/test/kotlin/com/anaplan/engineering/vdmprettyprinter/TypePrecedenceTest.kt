@@ -21,12 +21,12 @@
  */
 package com.anaplan.engineering.vdmprettyprinter
 
-import junit.framework.TestCase.assertEquals
-import org.junit.Test
 import org.overture.ast.definitions.ATypeDefinition
 import org.overture.ast.types.ANamedInvariantType
 import org.overture.interpreter.VDMSL
 import java.nio.file.Files
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class TypePrecedenceTest {
 
@@ -46,19 +46,24 @@ class TypePrecedenceTest {
     fun functionType_unionType_plain() = verifyType("char | real | token -> nat", "char | real | token -> nat")
 
     @Test
-    fun functionType_unionType_nestedFn_1() = verifyType("char | nat -> char | nat -> nat", "char | nat -> char | nat -> nat")
+    fun functionType_unionType_nestedFn_1() =
+        verifyType("char | nat -> char | nat -> nat", "char | nat -> char | nat -> nat")
 
     @Test
-    fun functionType_unionType_nestedFn_2() = verifyType("char | (nat -> char) | nat -> nat", "(nat -> char) | char | nat -> nat")
+    fun functionType_unionType_nestedFn_2() =
+        verifyType("char | (nat -> char) | nat -> nat", "(nat -> char) | char | nat -> nat")
 
     @Test
-    fun functionType_unionType_nestedFn_3() = verifyType("(char | nat -> char) | nat -> nat", "(char | nat -> char) | nat -> nat")
+    fun functionType_unionType_nestedFn_3() =
+        verifyType("(char | nat -> char) | nat -> nat", "(char | nat -> char) | nat -> nat")
 
     @Test
-    fun functionType_unionType_nestedFn_4() = verifyType("(char | nat) -> (char | nat) -> nat", "char | nat -> char | nat -> nat")
+    fun functionType_unionType_nestedFn_4() =
+        verifyType("(char | nat) -> (char | nat) -> nat", "char | nat -> char | nat -> nat")
 
     @Test
-    fun functionType_unionType_nestedFn_5() = verifyType("char | nat -> nat | (char -> nat)", "char | nat -> (char -> nat) | nat")
+    fun functionType_unionType_nestedFn_5() =
+        verifyType("char | nat -> nat | (char -> nat)", "char | nat -> (char -> nat) | nat")
 
     @Test
     fun functionType_productType_multipleParams() = verifyType("nat * nat * nat -> nat", "nat * nat * nat -> nat")
@@ -67,20 +72,25 @@ class TypePrecedenceTest {
     fun functionType_productType_singleParam() = verifyType("(nat * nat * nat) -> nat", "(nat * nat * nat) -> nat")
 
     @Test
-    fun functionType_productType_nestedFn_1() = verifyType("nat * nat -> nat * nat -> nat", "nat * nat -> nat * nat -> nat")
+    fun functionType_productType_nestedFn_1() =
+        verifyType("nat * nat -> nat * nat -> nat", "nat * nat -> nat * nat -> nat")
 
     @Test
-    fun functionType_productType_nestedFn_2() = verifyType("(nat * nat) -> (nat * nat) -> nat", "(nat * nat) -> (nat * nat) -> nat")
+    fun functionType_productType_nestedFn_2() =
+        verifyType("(nat * nat) -> (nat * nat) -> nat", "(nat * nat) -> (nat * nat) -> nat")
 
     @Test
-    fun functionType_productType_nestedFn_3() = verifyType("nat * (nat -> nat) * nat -> nat", "nat * (nat -> nat) * nat -> nat")
+    fun functionType_productType_nestedFn_3() =
+        verifyType("nat * (nat -> nat) * nat -> nat", "nat * (nat -> nat) * nat -> nat")
 
     @Test
-    fun functionType_productType_nestedFn_4() = verifyType("nat * (nat -> nat * (nat -> nat))", "nat * (nat -> nat * (nat -> nat))")
+    fun functionType_productType_nestedFn_4() =
+        verifyType("nat * (nat -> nat * (nat -> nat))", "nat * (nat -> nat * (nat -> nat))")
 
     @Test
-    fun functionType_productType_nestedFn_5() = verifyType("(nat * nat -> nat) * (nat -> nat)", "(nat * nat -> nat) * (nat -> nat)")
-    
+    fun functionType_productType_nestedFn_5() =
+        verifyType("(nat * nat -> nat) * (nat -> nat)", "(nat * nat -> nat) * (nat -> nat)")
+
     @Test
     fun unionType_nestedUnion_1() = verifyType("char | (real | token)", "char | real | token")
 
@@ -97,13 +107,16 @@ class TypePrecedenceTest {
     fun productType_noGrouping_2() = verifyType("char * (real * token)", "char * (real * token)")
 
     @Test
-    fun productType_inFunction_noGrouping_1() = verifyType("(nat * nat) * char * real +> bool", "(nat * nat) * char * real +> bool")
+    fun productType_inFunction_noGrouping_1() =
+        verifyType("(nat * nat) * char * real +> bool", "(nat * nat) * char * real +> bool")
 
     @Test
-    fun productType_inFunction_noGrouping_2() = verifyType("nat * nat * char * real +> bool", "nat * nat * char * real +> bool")
+    fun productType_inFunction_noGrouping_2() =
+        verifyType("nat * nat * char * real +> bool", "nat * nat * char * real +> bool")
 
     @Test
-    fun productType_inFunction_noGrouping_3() = verifyType("nat * (nat * char) * real +> bool", "nat * (nat * char) * real +> bool")
+    fun productType_inFunction_noGrouping_3() =
+        verifyType("nat * (nat * char) * real +> bool", "nat * (nat * char) * real +> bool")
 
     @Test
     fun productType_unionType_1() = verifyType("char | real * token", "real * token | char")
@@ -130,13 +143,16 @@ class TypePrecedenceTest {
     fun mapType_productType_3() = verifyType("(map nat * nat to nat) * nat", "map nat * nat to nat * nat")
 
     @Test
-    fun mapType_mapType_1() = verifyType("map map nat to nat to map nat to nat * nat", "map map nat to nat to (map nat to nat) * nat")
+    fun mapType_mapType_1() =
+        verifyType("map map nat to nat to map nat to nat * nat", "map map nat to nat to (map nat to nat) * nat")
 
     @Test
-    fun mapType_mapType_2() = verifyType("map (map nat to nat) to (map nat to nat)", "map map nat to nat to (map nat to nat)")
+    fun mapType_mapType_2() =
+        verifyType("map (map nat to nat) to (map nat to nat)", "map map nat to nat to (map nat to nat)")
 
     @Test
-    fun mapType_mapType_3() = verifyType("map map nat to nat * nat to (map nat to nat)", "map map nat to nat * nat to (map nat to nat)")
+    fun mapType_mapType_3() =
+        verifyType("map map nat to nat * nat to (map nat to nat)", "map map nat to nat * nat to (map nat to nat)")
 
     @Test
     fun inmapType_plain() = verifyType("inmap nat to nat", "inmap nat to nat")
@@ -151,13 +167,20 @@ class TypePrecedenceTest {
     fun inmapType_productType_3() = verifyType("(inmap nat * nat to nat) * nat", "inmap nat * nat to nat * nat")
 
     @Test
-    fun inmapType_inmapType_1() = verifyType("inmap inmap nat to nat to inmap nat to nat * nat", "inmap inmap nat to nat to (inmap nat to nat) * nat")
+    fun inmapType_inmapType_1() = verifyType(
+        "inmap inmap nat to nat to inmap nat to nat * nat",
+        "inmap inmap nat to nat to (inmap nat to nat) * nat"
+    )
 
     @Test
-    fun inmapType_inmapType_2() = verifyType("inmap (inmap nat to nat) to (inmap nat to nat)", "inmap inmap nat to nat to (inmap nat to nat)")
+    fun inmapType_inmapType_2() =
+        verifyType("inmap (inmap nat to nat) to (inmap nat to nat)", "inmap inmap nat to nat to (inmap nat to nat)")
 
     @Test
-    fun inmapType_inmapType_3() = verifyType("inmap inmap nat to nat * nat to (inmap nat to nat)", "inmap inmap nat to nat * nat to (inmap nat to nat)")
+    fun inmapType_inmapType_3() = verifyType(
+        "inmap inmap nat to nat * nat to (inmap nat to nat)",
+        "inmap inmap nat to nat * nat to (inmap nat to nat)"
+    )
 
     @Test
     fun setType_plain() = verifyType("set of nat", "set of nat")

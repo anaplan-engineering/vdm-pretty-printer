@@ -42,30 +42,30 @@ class MathematicalUnicodeTextRenderStrategyTest : VdmPrettyPrinterTest() {
     }
 
     override fun getExpectedNamedInvariantTypeContextSpec() =
-            """|$TYPES
-               |
-               |  a = $CHAR | ℝ
-               |
-               |$VALUES
-               |
-               |  b: a = 0
-               |
-               |
-               |""".trimMargin()
+        """|$TYPES
+           |
+           |  a = $CHAR | ℝ
+           |
+           |$VALUES
+           |
+           |  b: a = 0
+           |
+           |
+           |""".trimMargin()
 
     override fun getExpectedStructuredTypeContextSpec() =
-            """|$TYPES
-               |
-               |  a :: 
-               |    b : ℤ
-               |    c : ℝ
-               |
-               |$VALUES
-               |
-               |  d = ${MK_}a(1, 2.0)
-               |
-               |
-               |""".trimMargin()
+        """|$TYPES
+           |
+           |  a :: 
+           |    b : ℤ
+           |    c : ℝ
+           |
+           |$VALUES
+           |
+           |  d = ${MK_}a(1, 2.0)
+           |
+           |
+           |""".trimMargin()
 
 
     override fun getExpectedAQuoteType() = "<abc>"
@@ -77,29 +77,29 @@ class MathematicalUnicodeTextRenderStrategyTest : VdmPrettyPrinterTest() {
     override fun getExpectedATypeDefinition() = "a = $CHAR | ℝ"
 
     override fun getExpectedAIfExp() =
-            """|$IF b
-               |$THEN $FALSE
-               |$ELSE $TRUE""".trimMargin()
+        """|$IF b
+           |$THEN $FALSE
+           |$ELSE $TRUE""".trimMargin()
 
     override fun getExpectedALetDefExp() =
-            """|$LET
-               |  b = 1,
-               |  c = 2
-               |$IN
-               |  b + c""".trimMargin()
+        """|$LET
+           |  b = 1,
+           |  c = 2
+           |$IN
+           |  b + c""".trimMargin()
 
     override fun getExpectedAExplicitFunctionDefinition() =
-            """|fun1: ${BOOL} → ${BOOL}
-               |fun1(b) ⧋
-               |  $IF b
-               |  $THEN $FALSE
-               |  $ELSE $TRUE""".trimMargin()
+        """|fun1: ${BOOL} → ${BOOL}
+           |fun1(b) ⧋
+           |  $IF b
+           |  $THEN $FALSE
+           |  $ELSE $TRUE""".trimMargin()
 
     override fun getExpectedAImplicitFunctionDefinition() =
-            "" +
-                    "Log10(number: ℝ) result: ℝ ⧋\n" +
-                    "  Log(number, 10)\n" +
-                    "$POST 10 ↑ result = number"
+        "" +
+            "Log10(number: ℝ) result: ℝ ⧋\n" +
+            "  Log(number, 10)\n" +
+            "$POST 10 ↑ result = number"
 
     override fun getExpectedAPatternTypePair() = "result: ℝ"
 

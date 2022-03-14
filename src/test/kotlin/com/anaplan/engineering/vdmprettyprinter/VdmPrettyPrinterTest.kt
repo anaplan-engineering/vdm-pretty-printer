@@ -21,8 +21,6 @@
  */
 package com.anaplan.engineering.vdmprettyprinter
 
-import junit.framework.TestCase.assertEquals
-import org.junit.Test
 import org.overture.ast.definitions.AExplicitFunctionDefinition
 import org.overture.ast.definitions.AImplicitFunctionDefinition
 import org.overture.ast.definitions.ATypeDefinition
@@ -39,20 +37,23 @@ import org.overture.ast.types.AUnionType
 import org.overture.interpreter.VDMSL
 import java.io.File
 import java.nio.file.Files
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
 
 abstract class VdmPrettyPrinterTest {
 
     @Test
     fun caseAIntLiteralExp() {
         val valueDefinition = onlyValue(intValueSpec)
-        assertEquals(AIntLiteralExp::class.java, valueDefinition.expression.javaClass)
+        assertIs<AIntLiteralExp>(valueDefinition.expression)
         assertEquals(getExpectedAIntLiteralExp(), prettyPrint(valueDefinition.expression))
     }
 
     @Test
     fun caseAIotaExp() {
         val valueDefinition = onlyValue(iotaValueSpec)
-        assertEquals(AIotaExp::class.java, valueDefinition.expression.javaClass)
+        assertIs<AIotaExp>(valueDefinition.expression)
         assertEquals(getExpectedAIotaExp(), prettyPrint(valueDefinition.expression))
     }
 
@@ -60,28 +61,28 @@ abstract class VdmPrettyPrinterTest {
     fun caseATypeBind() {
         val iotaExp = onlyValue(iotaValueSpec).expression as AIotaExp
         val typeBind = iotaExp.bind
-        assertEquals(ATypeBind::class.java, typeBind.javaClass)
+        assertIs<ATypeBind>(typeBind)
         assertEquals(getExpectedATypeBind(), prettyPrint(typeBind))
     }
 
     @Test
     fun caseARealLiteralExp() {
         val valueDefinition = onlyValue(realValueSpec)
-        assertEquals(ARealLiteralExp::class.java, valueDefinition.expression.javaClass)
+        assertIs<ARealLiteralExp>(valueDefinition.expression)
         assertEquals(getExpectedARealLiteralExp(), prettyPrint(valueDefinition.expression))
     }
 
     @Test
     fun caseAUnaryMinusUnaryExp() {
         val valueDefinition = onlyValue(negativeIntValueSpec)
-        assertEquals(AUnaryMinusUnaryExp::class.java, valueDefinition.expression.javaClass)
+        assertIs<AUnaryMinusUnaryExp>(valueDefinition.expression)
         assertEquals(getExpectedAUnaryMinusUnaryExp(), prettyPrint(valueDefinition.expression))
     }
 
     @Test
     fun caseAIsExp() {
         val valueDefinition = onlyValue(isValueSpec)
-        assertEquals(AIsExp::class.java, valueDefinition.expression.javaClass)
+        assertIs<AIsExp>(valueDefinition.expression)
         assertEquals(getExpectedAIsExp(), prettyPrint(valueDefinition.expression))
     }
 
@@ -100,14 +101,14 @@ abstract class VdmPrettyPrinterTest {
     @Test
     fun caseAFloorUnaryExp() {
         val valueDefinition = onlyValue(floorValueSpec)
-        assertEquals(AFloorUnaryExp::class.java, valueDefinition.expression.javaClass)
+        assertIs<AFloorUnaryExp>(valueDefinition.expression)
         assertEquals(getExpectedAFloorUnaryExp(), prettyPrint(valueDefinition.expression))
     }
 
     @Test
     fun caseAUnionType() {
         val namedInvariantType = namedType(unionTypeSpec, "a").type as ANamedInvariantType
-        assertEquals(AUnionType::class.java, namedInvariantType.type.javaClass)
+        assertIs<AUnionType>(namedInvariantType.type)
         assertEquals(getExpectedAUnionType(), prettyPrint(namedInvariantType.type))
     }
 
@@ -115,14 +116,14 @@ abstract class VdmPrettyPrinterTest {
     fun caseAQuoteType() {
         val namedInvariantType = namedType(quoteTypeSpec, "a").type as ANamedInvariantType
         val unionType = namedInvariantType.type as AUnionType
-        assertEquals(AQuoteType::class.java, unionType.types.first.javaClass)
+        assertIs<AQuoteType>(unionType.types.first)
         assertEquals(getExpectedAQuoteType(), prettyPrint(unionType.types.first))
     }
 
     @Test
     fun caseANamedInvariantType() {
         val typeDefinition = namedType(unionTypeSpec, "a")
-        assertEquals(ANamedInvariantType::class.java, typeDefinition.type.javaClass)
+        assertIs<ANamedInvariantType>(typeDefinition.type)
         assertEquals(getExpectedANamedInvariantType(), prettyPrint(typeDefinition.type))
     }
 
@@ -135,7 +136,7 @@ abstract class VdmPrettyPrinterTest {
     @Test
     fun caseAIntNumericBasicType() {
         val valueDefinition = onlyValue(intValueSpec)
-        assertEquals(AIntNumericBasicType::class.java, valueDefinition.type.javaClass)
+        assertIs<AIntNumericBasicType>(valueDefinition.type)
         assertEquals(getExpectedAIntNumericBasicType(), prettyPrint(valueDefinition.type))
     }
 
@@ -147,14 +148,14 @@ abstract class VdmPrettyPrinterTest {
     @Test
     fun caseALetDefExp() {
         val valueDefinition = onlyValue(letValueSpec)
-        assertEquals(ALetDefExp::class.java, valueDefinition.expression.javaClass)
+        assertIs<ALetDefExp>(valueDefinition.expression)
         assertEquals(getExpectedALetDefExp(), prettyPrint(valueDefinition.expression))
     }
 
     @Test
     fun caseAIfExp() {
         val functionDefinition = onlyExplicitFunction(explicitFunctionSpec)
-        assertEquals(AIfExp::class.java, functionDefinition.body.javaClass)
+        assertIs<AIfExp>(functionDefinition.body)
         assertEquals(getExpectedAIfExp(), prettyPrint(functionDefinition.body))
     }
 
@@ -173,19 +174,22 @@ abstract class VdmPrettyPrinterTest {
     @Test
     fun caseAPatternTypePair() {
         val functionDefinition = onlyImplicitFunction(implicitFunctionSpec)
-        assertEquals(APatternTypePair::class.java, functionDefinition.result.javaClass)
+        assertIs<APatternTypePair>(functionDefinition.result)
         assertEquals(getExpectedAPatternTypePair(), prettyPrint(functionDefinition.result))
     }
 
     @Test
     fun caseAPatternListTypePair() {
         val functionDefinition = onlyImplicitFunction(implicitFunctionSpec)
-        assertEquals(APatternListTypePair::class.java, functionDefinition.paramPatterns.first.javaClass)
+        assertIs<APatternListTypePair>(functionDefinition.paramPatterns.first)
         assertEquals(getExpectedAPatternListTypePair(), prettyPrint(functionDefinition.paramPatterns.first))
     }
 
     private fun prettyPrint(node: INode) =
-            VdmPrettyPrinter(renderStrategy = getRenderStrategy()).prettyPrint(node, config = PrettyPrintConfig(includeHeaderFooter = false))
+        VdmPrettyPrinter(renderStrategy = getRenderStrategy()).prettyPrint(
+            node,
+            config = PrettyPrintConfig(includeHeaderFooter = false)
+        )
 
     private fun onlyExplicitFunction(spec: String) = onlyDefinition(spec, AExplicitFunctionDefinition::class.java)
     private fun onlyImplicitFunction(spec: String) = onlyDefinition(spec, AImplicitFunctionDefinition::class.java)

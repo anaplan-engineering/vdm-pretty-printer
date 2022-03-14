@@ -21,12 +21,12 @@
  */
 package com.anaplan.engineering.vdmprettyprinter
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
-import junit.framework.TestCase.assertEquals
-import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import org.overture.ast.node.INode
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class RenderBuilderTest {
 
@@ -177,7 +177,9 @@ class RenderBuilderTest {
     fun mixedBlock() {
         val nodeList = listOf(createNode("node1"), createNode("node2"), createNode("node3"))
         val node4 = createNode("node4")
-        val rendered = renderBuilder().node(node4).space().token(":").space().token("nat").token("-set").space().token("=").incIndent().nl().token("{").nodeList(nodeList).token("}").render
+        val rendered =
+            renderBuilder().node(node4).space().token(":").space().token("nat").token("-set").space().token("=")
+                .incIndent().nl().token("{").nodeList(nodeList).token("}").render
         assertEquals("node4 : nat-set =\n  {node1, node2, node3}", rendered)
     }
 
@@ -188,10 +190,10 @@ class RenderBuilderTest {
     }
 
     private fun renderBuilder(
-            vdmPrettyPrinter: VdmPrettyPrinter = mock<VdmPrettyPrinter>(),
-            config: PrettyPrintConfig = PrettyPrintConfig(minListLengthToUseNls = 10),
-            context: DefaultRenderContext = DefaultRenderContext(config)
-    ) : RenderBuilder {
+        vdmPrettyPrinter: VdmPrettyPrinter = mock<VdmPrettyPrinter>(),
+        config: PrettyPrintConfig = PrettyPrintConfig(minListLengthToUseNls = 10),
+        context: DefaultRenderContext = DefaultRenderContext(config)
+    ): RenderBuilder {
         whenever(vdmPrettyPrinter.renderStrategy).thenReturn(PlainAsciiTextRenderStrategy())
         return RenderBuilder(vdmPrettyPrinter, context)
     }

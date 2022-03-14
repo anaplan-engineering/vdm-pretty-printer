@@ -1,11 +1,10 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.2.21"
+    id "org.jetbrains.kotlin.jvm" version "1.5.31"
+    id "maven-publish"
 }
 
 group = 'com.anaplan.engineering'
-version = '2.6.5-SNAPSHOT'
-
-apply plugin: 'kotlin'
+version = '3.0.2'
 
 sourceSets {
     example {
@@ -24,12 +23,12 @@ sourceSets {
 }
 
 ext {
-    kotlinVersion = "1.2.21"
+    kotlinVersion = "1.5.31"
     overtureVersion = project.version
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -38,9 +37,25 @@ dependencies {
 
     implementation group: 'org.overturetool.core', name: 'interpreter', version: overtureVersion
 
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
-    testImplementation group: 'com.nhaarman', name: 'mockito-kotlin', version: '1.5.0'
+    testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlinVersion
+    testImplementation group: 'org.mockito.kotlin', name: 'mockito-kotlin', version: '4.0.0'
 }
 
+// Using artifactory plugin appears broken -- https://github.com/gradle/gradle/issues/4783
+publishing {
+    repositories {
+        maven {
+            credentials {
+                username System.env.ART_USERNAME
+                password System.env.ART_PASSWORD
+            }
+            url findProperty('ART_URL')
+        }
+    }
 
-
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
