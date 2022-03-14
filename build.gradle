@@ -1,10 +1,11 @@
 plugins {
     id "org.jetbrains.kotlin.jvm" version "1.5.31"
     id "maven-publish"
+    id 'signing'
 }
 
 group = 'com.anaplan.engineering'
-version = '3.0.2'
+version = findProperty("version")
 
 sourceSets {
     example {
@@ -22,40 +23,84 @@ sourceSets {
     }
 }
 
-ext {
-    kotlinVersion = "1.5.31"
-    overtureVersion = project.version
-}
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlinVersion
-    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlinVersion
+    implementation platform('org.jetbrains.kotlin:kotlin-bom')
+    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib'
+    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect'
 
-    implementation group: 'org.overturetool.core', name: 'interpreter', version: overtureVersion
+    implementation group: 'org.overturetool.core', name: 'interpreter', version: '3.0.2'
 
-    testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlinVersion
+    testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test'
     testImplementation group: 'org.mockito.kotlin', name: 'mockito-kotlin', version: '4.0.0'
 }
 
-// Using artifactory plugin appears broken -- https://github.com/gradle/gradle/issues/4783
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
 publishing {
     repositories {
         maven {
+            url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
             credentials {
-                username System.env.ART_USERNAME
-                password System.env.ART_PASSWORD
+                username findProperty("ossrhUsername")
+                password findProperty("ossrhPassword")
             }
-            url findProperty('ART_URL')
         }
     }
-
     publications {
         mavenJava(MavenPublication) {
             from components.java
+            pom {
+                name = 'VDM Pretty Printer'
+                description = 'Tools to produce a pretty-printed representation of a VDM AST.'
+                url = 'https://github.com/anaplan-engineering/vdm-pretty-printer'
+
+                scm {
+                    connection = 'scm:git:git://github.com/anaplan-engineering/vdm-pretty-printer.git'
+                    developerConnection = 'scm:git:git@github.com:anaplan-engineering/vdm-pretty-printer.git'
+                    url = 'https://github.com/anaplan-engineering/vdm-pretty-printer'
+                }
+
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://github.com/anaplan-engineering/vdm-pretty-printer/blob/main/LICENSE'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'sifraser'
+                        name = 'Simon Fraser'
+                        email = 'simon.fraser@anaplan.com'
+                        roles = ['architect', 'principal engineer']
+                        url = "https://github.com/sifraser"
+                        organization = "Anaplan Ltd"
+                        organizationUrl = "http://www.anaplan.com"
+                    }
+                    developer {
+                        id = 'donbex'
+                        name = 'Alessandro Pezzoni'
+                        email = 'alessandro.pezzoni@anaplan.com'
+                        url = "https://github.com/donbex"
+                        organization = "Anaplan Ltd"
+                        organizationUrl = "http://www.anaplan.com"
+                        roles = ['associate engineer']
+                    }
+                }
+            }
         }
     }
 }
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+
