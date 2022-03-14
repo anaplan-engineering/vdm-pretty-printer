@@ -40,25 +40,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Publish') {
-            when {
-                expression {
-                    params.version?.trim()
-                }
-            }
-            steps {
-                container('gradle') {
-                    withCredentials([usernamePassword(
-                            credentialsId: DefaultConfig.ARTIFACTORY_UNSTABLE_CREDENTIAL_ID,
-                            passwordVariable: 'ART_PASSWORD',
-                            usernameVariable: 'ART_USERNAME'
-                    )]) {
-                        sh "./gradlew -PART_URL=https://artifacts.anaplan-np.net/artifactory/anaplan-develop -Pversion=${params.version} publishAll --info"
-                    }
-                }
-            }
-        }
     }
 
 }
