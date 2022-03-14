@@ -66,8 +66,8 @@ interface Reference {
 }
 
 data class InterContainerReference(
-        val container: String,
-        val name: String
+    val container: String,
+    val name: String
 ) : Reference {
     override fun render(context: IRenderContext): String {
         return ""
@@ -75,7 +75,7 @@ data class InterContainerReference(
 }
 
 data class IntraContainerReference(
-        val name: String
+    val name: String
 ) : Reference {
     override fun render(context: IRenderContext): String {
         return ""
@@ -88,13 +88,13 @@ enum class ContainerType {
 }
 
 internal class DefaultRenderContext(
-        override val config: PrettyPrintConfig = PrettyPrintConfig(),
-        override val indentCount: Int = 0,
-        override val lineState: LineState = LineState.new,
-        override val typeDef: Boolean = false,
-        override val containerName: String = defaultModuleName,
-        override val containerType: ContainerType = ContainerType.module,
-        override val importedNames: Map<InterContainerReference, IntraContainerReference> = emptyMap()
+    override val config: PrettyPrintConfig = PrettyPrintConfig(),
+    override val indentCount: Int = 0,
+    override val lineState: LineState = LineState.new,
+    override val typeDef: Boolean = false,
+    override val containerName: String = defaultModuleName,
+    override val containerType: ContainerType = ContainerType.module,
+    override val importedNames: Map<InterContainerReference, IntraContainerReference> = emptyMap()
 ) : IRenderContext {
     override fun setTypeDef() = new(typeDef = true)
     override fun unsetTypeDef() = new(typeDef = false)
@@ -110,18 +110,29 @@ internal class DefaultRenderContext(
 
     override fun incIndent() = new(indentCount = indentCount + 1)
 
-    override fun setCurrentContainer(module: AModuleModules) = new(containerName = module.name.name, containerType = ContainerType.module, importedNames = getImportedNames(module))
+    override fun setCurrentContainer(module: AModuleModules) = new(
+        containerName = module.name.name,
+        containerType = ContainerType.module,
+        importedNames = getImportedNames(module)
+    )
 
     private fun getImportedNames(module: AModuleModules): Map<InterContainerReference, IntraContainerReference> {
         return module.imports?.imports?.flatMap { import ->
             val moduleName = import.name.name
             import.signatures.flatten().filter { it.renamed != null && it !is AAllImport }.map { signature ->
-                InterContainerReference(moduleName, signature.name.name) to IntraContainerReference(signature.renamed.name)
+                InterContainerReference(
+                    moduleName,
+                    signature.name.name
+                ) to IntraContainerReference(signature.renamed.name)
             }
         }?.toMap() ?: emptyMap()
     }
 
-    override fun setCurrentContainer(vdmClass: SClassDefinition) = new(containerName = vdmClass.name.name, containerType = ContainerType.vdmClass, importedNames = getImportedNames(vdmClass))
+    override fun setCurrentContainer(vdmClass: SClassDefinition) = new(
+        containerName = vdmClass.name.name,
+        containerType = ContainerType.vdmClass,
+        importedNames = getImportedNames(vdmClass)
+    )
 
     private fun getImportedNames(vdmClass: SClassDefinition): Map<InterContainerReference, IntraContainerReference> {
         return getAllSuperClasses(vdmClass).flatMap { superClass ->
@@ -134,16 +145,16 @@ internal class DefaultRenderContext(
     }
 
     private fun getAllSuperClasses(vdmClass: SClassDefinition): Set<SClassDefinition> =
-            vdmClass.superDefs?.flatMap { listOf(it) + getAllSuperClasses(it) }?.toSet() ?: emptySet()
+        vdmClass.superDefs?.flatMap { listOf(it) + getAllSuperClasses(it) }?.toSet() ?: emptySet()
 
     private fun new(
-            config: PrettyPrintConfig = this.config,
-            indentCount: Int = this.indentCount,
-            newLine: LineState = this.lineState,
-            typeDef: Boolean = this.typeDef,
-            containerName: String = this.containerName,
-            containerType: ContainerType = this.containerType,
-            importedNames: Map<InterContainerReference, IntraContainerReference> = this.importedNames
+        config: PrettyPrintConfig = this.config,
+        indentCount: Int = this.indentCount,
+        newLine: LineState = this.lineState,
+        typeDef: Boolean = this.typeDef,
+        containerName: String = this.containerName,
+        containerType: ContainerType = this.containerType,
+        importedNames: Map<InterContainerReference, IntraContainerReference> = this.importedNames
     ) = DefaultRenderContext(config, indentCount, newLine, typeDef, containerName, containerType, importedNames)
 
     override fun resolveReference(reference: InterContainerReference) = importedNames[reference] ?: reference

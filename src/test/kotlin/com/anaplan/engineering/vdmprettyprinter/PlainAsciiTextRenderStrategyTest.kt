@@ -23,30 +23,30 @@ package com.anaplan.engineering.vdmprettyprinter
 
 class PlainAsciiTextRenderStrategyTest : VdmPrettyPrinterTest() {
     override fun getExpectedNamedInvariantTypeContextSpec() =
-            """|types
-               |
-               |  a = char | real
-               |
-               |values
-               |
-               |  b: a = 0
-               |
-               |
-               |""".trimMargin()
+        """|types
+           |
+           |  a = char | real
+           |
+           |values
+           |
+           |  b: a = 0
+           |
+           |
+           |""".trimMargin()
 
     override fun getExpectedStructuredTypeContextSpec() =
-            """|types
-               |
-               |  a :: 
-               |    b : int
-               |    c : real
-               |
-               |values
-               |
-               |  d = mk_a(1, 2.0)
-               |
-               |
-               |""".trimMargin()
+        """|types
+           |
+           |  a :: 
+           |    b : int
+           |    c : real
+           |
+           |values
+           |
+           |  d = mk_a(1, 2.0)
+           |
+           |
+           |""".trimMargin()
 
     override fun getExpectedAQuoteType() = "<abc>"
 
@@ -57,29 +57,29 @@ class PlainAsciiTextRenderStrategyTest : VdmPrettyPrinterTest() {
     override fun getExpectedATypeDefinition() = "a = char | real"
 
     override fun getExpectedAIfExp() =
-            """|if b
-               |then false
-               |else true""".trimMargin()
+        """|if b
+           |then false
+           |else true""".trimMargin()
 
     override fun getExpectedALetDefExp() =
-            """|let
-               |  b = 1,
-               |  c = 2
-               |in
-               |  b + c""".trimMargin()
+        """|let
+           |  b = 1,
+           |  c = 2
+           |in
+           |  b + c""".trimMargin()
 
     override fun getExpectedAExplicitFunctionDefinition() =
-            """|fun1: bool -> bool
-               |fun1(b) ==
-               |  if b
-               |  then false
-               |  else true""".trimMargin()
+        """|fun1: bool -> bool
+           |fun1(b) ==
+           |  if b
+           |  then false
+           |  else true""".trimMargin()
 
     override fun getExpectedAImplicitFunctionDefinition() =
-            "" +
-                    "Log10(number: real) result: real ==\n" +
-                    "  Log(number, 10)\n" +
-                    "post 10 ** result = number"
+        "" +
+            "Log10(number: real) result: real ==\n" +
+            "  Log(number, 10)\n" +
+            "post 10 ** result = number"
 
     override fun getExpectedAPatternTypePair() = "result: real"
 

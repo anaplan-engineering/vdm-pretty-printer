@@ -21,9 +21,7 @@
  */
 package com.anaplan.engineering.vdmprettyprinter
 
-import kotlin.test.assertEquals
 import org.junit.Assume
-import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import org.overture.interpreter.VDMJ
@@ -36,6 +34,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 /**
  * Flow of this test is to:
@@ -70,7 +70,11 @@ class VdmSlReparseTest(val exampleDir: String) {
         val firstParseResult = parseAndPrettyPrintVdmSl(inputDirectory)
         val secondParseResult = parseAndPrettyPrintVdmSl(firstParseResult.prettyPrintOutputDirectory)
         checkModules(firstParseResult.modules, secondParseResult.modules)
-        checkRenderings(firstParseResult.prettyPrintOutputDirectory, secondParseResult.prettyPrintOutputDirectory, vdmSlFileExtension)
+        checkRenderings(
+            firstParseResult.prettyPrintOutputDirectory,
+            secondParseResult.prettyPrintOutputDirectory,
+            vdmSlFileExtension
+        )
     }
 
     private fun checkModules(modules1: ModuleListInterpreter, modules2: ModuleListInterpreter) {
@@ -82,8 +86,8 @@ class VdmSlReparseTest(val exampleDir: String) {
     }
 
     private data class ModuleParseAndPrettyPrintResult(
-            val modules: ModuleListInterpreter,
-            val prettyPrintOutputDirectory: File
+        val modules: ModuleListInterpreter,
+        val prettyPrintOutputDirectory: File
     )
 
     private fun parseAndPrettyPrintVdmSl(inputDirectory: File): ModuleParseAndPrettyPrintResult {
@@ -92,12 +96,16 @@ class VdmSlReparseTest(val exampleDir: String) {
         val prettyPrinter = VdmPrettyPrinter(renderStrategy = PlainAsciiTextRenderStrategy())
         val outputDirectory = Files.createTempDirectory(vdmSlFileExtension)
         vdmsl.interpreter.modules.forEach { module ->
-            outputDirectory.resolve("${module.name.name}.${vdmSlFileExtension}").toFile().writeText(prettyPrinter.prettyPrint(module,
-                    config = PrettyPrintConfig(logUnhandledCases = true, minListLengthToUseNls = 10)))
+            outputDirectory.resolve("${module.name.name}.${vdmSlFileExtension}").toFile().writeText(
+                prettyPrinter.prettyPrint(
+                    module,
+                    config = PrettyPrintConfig(logUnhandledCases = true, minListLengthToUseNls = 10)
+                )
+            )
         }
         return ModuleParseAndPrettyPrintResult(
-                prettyPrintOutputDirectory = outputDirectory.toFile(),
-                modules = vdmsl.interpreter.modules
+            prettyPrintOutputDirectory = outputDirectory.toFile(),
+            modules = vdmsl.interpreter.modules
         )
     }
 
